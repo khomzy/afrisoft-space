@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFRISOFT.SPACE // System Architecture</title>
+    <meta name="description" content="The central discovery matrix and innovation ecosystem for AfriSoft Technologies.">
+
+    <!-- PREMIUM TYPOGRAPHY -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           1. CSS VARIABLES & SYSTEM TOKENS
+           ========================================== */
+        :root {
+            --bg-canvas: #050508;
+            --bg-surface: #0a0b10;
+            --bg-elevated: #0f1117;
+            --accent-cyan: #00f3ff;
+            --accent-violet: #7b2ff7;
+            --accent-green: #00ff9d;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-tertiary: #545468;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(0, 243, 255, 0.4);
+            --shadow-glow-cyan: 0 0 20px rgba(0, 243, 255, 0.15);
+            --shadow-glow-violet: 0 0 20px rgba(123, 47, 247, 0.15);
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* ==========================================
+           2. GLOBAL RESET & BASE STYLES
+           ========================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 300;
+            overflow-x: hidden;
+            cursor: none; /* Custom Cursor System */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection { background: var(--accent-cyan); color: var(--bg-canvas); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-canvas); }
+        ::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+
+        /* ==========================================
+           3. SYSTEM BOOT SEQUENCE
+           ========================================== */
+        #boot-sequence {
+            position: fixed; inset: 0; z-index: 10000;
+            background: var(--bg-canvas);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-green);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #boot-sequence.fade-out { opacity: 0; visibility: hidden; }
+        .boot-text { font-size: 14px; margin: 2px 0; opacity: 0; animation: bootFade 0.3s forwards; }
+        @keyframes bootFade { to { opacity: 1; } }
+
+        /* ==========================================
+           4. CUSTOM CURSOR & MAGNETIC SYSTEM
+           ========================================== */
+        .cursor-dot {
+            position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+            background: var(--accent-cyan); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+        .cursor-ring {
+            position: fixed; top: 0; left: 0; width: 32px; height: 32px;
+            border: 1px solid var(--text-tertiary); border-radius: 50%;
+            pointer-events: none; z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease-out, width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring.hover-active {
+            width: 48px; height: 48px; border-color: var(--accent-cyan);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        /* ==========================================
+           5. LAYOUT & GLASSMORPHISM UTILITIES
+           ========================================== */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+        
+        .glass-panel {
+            background: rgba(10, 11, 16, 0.6);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+        }
+
+        .section-padding { padding: 120px 0; }
+
+        .section-header { margin-bottom: 60px; }
+        .section-title {
+            font-size: 14px; font-weight: 500; text-transform: uppercase;
+            letter-spacing: 3px; color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .section-title::before { content: ''; width: 8px; height: 8px; background: var(--accent-cyan); border-radius: 50%; box-shadow: 0 0 10px var(--accent-cyan); }
+        .section-headline { font-size: 48px; font-weight: 200; letter-spacing: -1.5px; line-height: 1.1; }
+        .section-headline span { font-weight: 700; }
+
+        /* ==========================================
+           6. HERO SECTION & WEBGL CANVAS
+           ========================================== */
+        #hero {
+            position: relative; height: 100vh; min-height: 700px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        #hero-canvas {
+            position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;
+        }
+        .hero-overlay {
+            position: relative; z-index: 2; text-align: center;
+            max-width: 1000px; padding: 0 20px;
+        }
+        .hero-title {
+            font-size: clamp(40px, 7vw, 96px);
+            font-weight: 900; line-height: 0.95; letter-spacing: -3px;
+            margin-bottom: 40px;
+            background: linear-gradient(180deg, #fff 0%, #a0a0b0 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-title span {
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* Omni-Search Console */
+        .search-console {
+            max-width: 600px; margin: 0 auto; position: relative;
+        }
+        .search-input {
+            width: 100%; padding: 20px 24px; padding-right: 80px;
+            background: rgba(15, 17, 23, 0.8); backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass); border-radius: 12px;
+            color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 16px;
+            outline: none; transition: var(--transition-smooth);
+        }
+        .search-input:focus { border-color: var(--accent-cyan); box-shadow: var(--shadow-glow-cyan); }
+        .search-input::placeholder { color: var(--text-tertiary); }
+        .search-badge {
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            background: var(--bg-canvas); border: 1px solid var(--border-glass);
+            padding: 4px 8px; border-radius: 4px; font-size: 12px; color: var(--text-tertiary);
+            font-family: 'JetBrains Mono', monospace; pointer-events: none;
+        }
+
+        /* ==========================================
+           7. ECOSYSTEM QUADRANTS
+           ========================================== */
+        .quadrant-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        }
+        .quadrant-card {
+            padding: 32px; border-radius: 12px; background: var(--bg-surface);
+            border: 1px solid var(--border-glass); cursor: pointer;
+            transition: var(--transition-smooth); position: relative; overflow: hidden;
+        }
+        .quadrant-card::before {
+            content: ''; position: absolute; inset: 0; opacity: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.1), transparent 70%);
+            transition: opacity 0.4s ease;
+        }
+        .quadrant-card:hover { border-color: var(--accent-cyan); transform: translateY(-4px); }
+        .quadrant-card:hover::before { opacity: 1; }
+        .quadrant-number { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-tertiary); margin-bottom: 40px; display: block; }
+        .quadrant-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .quadrant-desc { font-size: 14px; color: var(--text-secondary); }
+
+        /* ==========================================
+           8. PROJECT CARDS (Flagships & Labs)
+           ========================================== */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        
+        .project-card {
+            background: var(--bg-surface); border: 1px solid var(--border-glass);
+            border-radius: 12px; padding: 28px; position: relative; overflow: hidden;
+            transition: var(--transition-smooth); display: flex; flex-direction: column;
+        }
+        .project-card:hover {
+            border-color: var(--accent-violet); transform: scale(1.02);
+            box-shadow: var(--shadow-glow-violet);
+        }
+        .project-card.hidden { display: none; opacity: 0; }
+
+        .card-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            opacity: 0.15; z-index: 0; transition: opacity 0.4s ease;
+        }
+        .project-card:hover .card-bg { opacity: 0.4; }
+        
+        .project-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(10,11,16,0.7) 0%, rgba(10,11,16,0.95) 100%);
+            z-index: 1; pointer-events: none; transition: background 0.4s ease;
+        }
+        .project-card:hover::after {
+            background: linear-gradient(180deg, rgba(10,11,16,0.5) 0%, rgba(10,11,16,0.85) 100%);
+        }
+        
+        .card-header, .card-desc, .card-footer { position: relative; z-index: 2; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px; }
+        .card-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+        
+        .status-pill {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 4px 10px;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+        .status-stable { background: rgba(0, 255, 157, 0.1); color: var(--accent-green); border: 1px solid rgba(0, 255, 157, 0.3); }
+        .status-beta { background: rgba(0, 243, 255, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 243, 255, 0.3); }
+        .status-indev { background: rgba(123, 47, 247, 0.1); color: var(--accent-violet); border: 1px solid rgba(123, 47, 247, 0.3); }
+
+        .card-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; flex-grow: 1; }
+        
+        .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+        
+        .card-hash {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-tertiary);
+            opacity: 0.5; transition: opacity 0.3s;
+        }
+        .project-card:hover .card-hash { opacity: 1; color: var(--accent-cyan); }
+
+        .terminal-btn {
+            background: transparent; border: 1px solid var(--border-glass); color: var(--text-secondary);
+            padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: none;
+            font-family: 'JetBrains Mono', monospace; transition: var(--transition-smooth);
+            display: flex; align-items: center; gap: 6px; backdrop-filter: blur(4px);
+        }
+        .terminal-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 243, 255, 0.05); }
+
+        /* Terminal Emulator Overlay */
+        .terminal-window {
+            position: fixed; bottom: 20px; right: 20px; width: 500px; max-width: calc(100vw - 40px);
+            height: 300px; background: rgba(5, 5, 8, 0.95); backdrop-filter: blur(20px);
+            border: 1px solid var(--accent-cyan); border-radius: 8px; z-index: 1000;
+            display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            transform: translateY(20px); opacity: 0; pointer-events: none; transition: all 0.3s ease;
+        }
+        .terminal-window.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .terminal-header { padding: 10px 16px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
+        .terminal-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-green); }
+        .terminal-close { cursor: pointer; color: var(--text-tertiary); font-size: 16px; background: none; border: none; }
+        .terminal-body { padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-green); overflow-y: auto; flex-grow: 1; }
+        .terminal-input-line { display: flex; align-items: center; padding-top: 8px; }
+        .terminal-prompt { color: var(--accent-cyan); margin-right: 8px; }
+        .terminal-input { background: transparent; border: none; outline: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 13px; flex-grow: 1; }
+
+        /* ==========================================
+           9. FOUNDRY & INDUSTRIAL MATRIX
+           ========================================== */
+        .immersive-dark { background: var(--bg-canvas); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
+        .crosshair-corners { position: relative; }
+        .crosshair-corners::before, .crosshair-corners::after,
+        .crosshair-corners > .corner-tl, .crosshair-corners > .corner-tr {
+            content: ''; position: absolute; width: 12px; height: 12px; border: 1px solid var(--accent-cyan);
+            opacity: 0.5; transition: opacity 0.3s; z-index: 3;
+        }
+        .crosshair-corners::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .crosshair-corners::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+        .crosshair-corners > .corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .crosshair-corners > .corner-tl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .crosshair-corners:hover::before, .crosshair-corners:hover::after,
+        .crosshair-corners:hover > .corner-tr, .crosshair-corners:hover > .corner-tl { opacity: 1; }
+
+        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .code-block {
+            background: #000; border-radius: 8px; padding: 24px; font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; line-height: 1.6; border: 1px solid var(--border-glass); position: relative;
+        }
+        .code-line { display: flex; }
+        .line-num { color: var(--text-tertiary); width: 30px; text-align: right; margin-right: 15px; user-select: none; }
+        .syntax-keyword { color: var(--accent-violet); }
+        .syntax-func { color: var(--accent-cyan); }
+        .syntax-string { color: var(--accent-green); }
+        .syntax-comment { color: var(--text-tertiary); font-style: italic; }
+
+        /* ==========================================
+           10. ACTIVITY STREAM (LIVE LEDGER)
+           ========================================== */
+        #activity { position: relative; overflow: hidden; }
+        .activity-video-bg {
+            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
+            width: auto; height: auto; z-index: 0; transform: translate(-50%, -50%);
+            opacity: 0.2; object-fit: cover; filter: hue-rotate(180deg) contrast(1.2);
+        }
+        .timeline { position: relative; padding-left: 30px; border-left: 1px solid var(--border-glass); }
+        .timeline-item { margin-bottom: 32px; position: relative; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -36px; top: 4px; width: 12px; height: 12px;
+            background: var(--bg-canvas); border: 2px solid var(--accent-cyan); border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-cyan); animation: pulse 2s infinite; z-index: 2;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 243, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); } }
+        .timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-cyan); margin-bottom: 4px; }
+        .timeline-text { font-size: 15px; color: var(--text-secondary); }
+
+        /* ==========================================
+           11. AFRISOFT COPILOT (AI OVERLAY)
+           ========================================== */
+        .copilot-orb {
+            position: fixed; bottom: 30px; right: 30px; width: 56px; height: 56px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+            border-radius: 50%; cursor: none; z-index: 1000; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); transition: transform 0.3s;
+        }
+        .copilot-orb:hover { transform: scale(1.1); }
+        .copilot-orb svg { width: 24px; height: 24px; fill: white; }
+
+        .copilot-overlay {
+            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(20px);
+            z-index: 2000; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .copilot-overlay.active { opacity: 1; pointer-events: auto; }
+        .copilot-box { width: 600px; max-width: 90%; background: var(--bg-surface); border: 1px solid var(--accent-cyan); border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+        .copilot-header { padding: 16px 24px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; }
+        .copilot-title { font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-size: 14px; }
+        .copilot-input { width: 100%; padding: 24px; background: transparent; border: none; outline: none; color: var(--text-primary); font-size: 20px; font-family: 'Inter', sans-serif; }
+        .copilot-input::placeholder { color: var(--text-tertiary); }
+        .copilot-suggestions { padding: 0 24px 24px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .suggestion-chip { background: var(--bg-elevated); border: 1px solid var(--border-glass); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: var(--text-secondary); cursor: none; transition: all 0.2s; }
+        .suggestion-chip:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+        /* ==========================================
+           12. DIAGNOSTICS & UTILITY
+           ========================================== */
+        #diagnostics {
+            position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 8px 12px;
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent-green);
+            border-radius: 4px; z-index: 5000; display: none; border: 1px solid var(--border-glass);
+        }
+        #search-highlight { position: fixed; pointer-events: none; z-index: 999; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 20px var(--accent-cyan); opacity: 0; transition: all 0.3s ease; }
+
+        /* ==========================================
+           13. RESPONSIVE & ACCESSIBILITY
+           ========================================== */
+        @media (max-width: 1024px) {
+            .quadrant-grid { grid-template-columns: repeat(2, 1fr); }
+            .split-layout { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .section-padding { padding: 80px 0; }
+            .section-headline { font-size: 32px; }
+            .quadrant-grid { grid-template-columns: 1fr; }
+            body { cursor: auto; }
+            .cursor-dot, .cursor-ring { display: none; }
+            .terminal-btn, .suggestion-chip, .copilot-orb { cursor: pointer; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+            #hero-canvas { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOOT SEQUENCE -->
+    <div id="boot-sequence">
+        <div class="boot-text" style="animation-delay: 0.1s">> INITIALIZING AFRISOFT KERNEL...</div>
+        <div class="boot-text" style="animation-delay: 0.4s">> MOUNTING ECOSYSTEM QUADRANTS...</div>
+        <div class="boot-text" style="animation-delay: 0.7s">> VERIFYING CRYPTOGRAPHIC STATE...</div>
+        <div class="boot-text" style="animation-delay: 1.0s">> RENDERING WEBGL CONTEXT...</div>
+        <div class="boot-text" style="animation-delay: 1.3s">> SYSTEM READY.</div>
+    </div>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- DIAGNOSTICS OVERLAY (Cmd+P) -->
+    <div id="diagnostics">FPS: 60 | DOM: 0 | MEM: 0MB</div>
+
+    <!-- TERMINAL EMULATOR -->
+    <div class="terminal-window" id="terminal-window">
+        <div class="terminal-header">
+            <span class="terminal-title">AFRISOFT_SHELL // ROOT@LOCALHOST:~$</span>
+            <button class="terminal-close" onclick="closeTerminal()">[X]</button>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+            <div>Welcome to AFRISOFT Shell. Type 'help' for commands.</div>
+        </div>
+        <div style="padding: 12px 16px; border-top: 1px solid var(--border-glass);">
+            <div class="terminal-input-line">
+                <span class="terminal-prompt">➜ ~</span>
+                <input type="text" class="terminal-input" id="terminal-input" autofocus>
+            </div>
+        </div>
+    </div>
+
+    <!-- AFRISOFT COPILOT -->
+    <div class="copilot-orb" onclick="toggleCopilot(true)">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="copilot-overlay" id="copilot-overlay">
+        <div class="copilot-box glass-panel">
+            <div class="copilot-header">
+                <span class="copilot-title">AFRISOFT COPILOT // ONLINE</span>
+                <button class="terminal-close" onclick="toggleCopilot(false)">[X]</button>
+            </div>
+            <input type="text" class="copilot-input" id="copilot-input" placeholder="Ask Copilot to find projects, status, or tech...">
+            <div class="copilot-suggestions">
+                <div class="suggestion-chip" onclick="copilotSearch('Show me IoT projects')">Show me IoT projects</div>
+                <div class="suggestion-chip" onclick="copilotSearch('What is in the Innovation Lab?')">What is in the Innovation Lab?</div>
+                <div class="suggestion-chip" onclick="copilotSearch('Open Source Repos')">Open Source Repos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-overlay">
+            <h1 class="hero-title">AFRISOFT.SPACE<br><span>NEXT-GEN SOFTWARES</span></h1>
+            <div style="margin-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary);">
+                Download our products at <a href="https://afrisoft.store" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">AFRISOFT STORE</a>
+            </div>
+            <div class="search-console" style="margin-top: 30px;">
+                <input type="text" class="search-input" id="omni-search" placeholder="Search the ecosystem, projects, or tech stack...">
+                <div class="search-badge">[ / ]</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ECOSYSTEM QUADRANTS -->
+    <section class="section-padding container" id="quadrants">
+        <div class="section-header">
+            <div class="section-title">System Quadrants</div>
+            <h2 class="section-headline">Intent <span>Navigation</span></h2>
+        </div>
+        <div class="quadrant-grid">
+            <div class="quadrant-card">
+                <span class="quadrant-number">01 // SOFTWARE</span>
+                <h3 class="quadrant-title">Software Systems</h3>
+                <p class="quadrant-desc">Desktop, Mobile, and Web execution layers.</p>
+            </div>
+            <div class="quadrant-card">
+                <span class="quadrant-number">02 // INTELLIGENCE</span>
+                <h3 class="quadrant-title">Intelligence Lab</h3>
+                <p class="quadrant-desc">LLMs, automation, and local data analysis tools.</p>
+            </div>
+            <div class="quadrant-card">
+                <span class="quadrant-number">03 // FOUNDRY</span>
+                <h3 class="quadrant-title">RE-Reality & Foundry</h3>
+                <p class="quadrant-desc">3D environments, WebGL simulations, and VFX assets.</p>
+            </div>
+            <div class="quadrant-card">
+                <span class="quadrant-number">04 // DEVKIT</span>
+                <h3 class="quadrant-title">The Devkit Portal</h3>
+                <p class="quadrant-desc">Open-source SDKs, APIs, and public code modules.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLAGSHIP ENGINE -->
+    <section class="section-padding container" id="flagships">
+        <div class="section-header">
+            <div class="section-title">Core Production</div>
+            <h2 class="section-headline">The Flagship <span>Engine</span></h2>
+        </div>
+        <div class="project-grid" id="flagship-grid">
+            <!-- JS will populate this based on registry -->
+        </div>
+    </section>
+
+    <!-- INNOVATION LAB -->
+    <section class="section-padding container" id="labs">
+        <div class="section-header">
+            <div class="section-title">Active R&D</div>
+            <h2 class="section-headline">Innovation Lab & <span>Experiments</span></h2>
+        </div>
+        <div class="project-grid" id="lab-grid">
+            <!-- JS will populate this -->
+        </div>
+    </section>
+
+    <!-- 3D & FOUNDRY -->
+    <section class="section-padding immersive-dark" id="foundry">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-title">Spatial Computing</div>
+                <h2 class="section-headline">3D, VR & Computer Vision <span>Foundry</span></h2>
+            </div>
+            <div class="project-grid">
+                <div class="project-card glass-panel crosshair-corners">
+                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="corner-tl"></div><div class="corner-tr"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">3D Spatial Analytics Globe</h3>
+                        <span class="status-pill status-beta">REAL-TIME</span>
+                    </div>
+                    <p class="card-desc">Interactive canvas showing live global telemetry maps and user deployment clusters.</p>
+                    <div class="card-footer"><span class="card-hash">[HASH: 9f3a]</span></div>
+                </div>
+                <div class="project-card glass-panel crosshair-corners">
+                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="corner-tl"></div><div class="corner-tr"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">VR Telepresence Showroom</h3>
+                        <span class="status-pill status-indev">CONCEPT</span>
+                    </div>
+                    <p class="card-desc">Fully responsive structural concept layouts for future production studios and spatial reviews.</p>
+                    <div class="card-footer"><span class="card-hash">[HASH: b71c]</span></div>
+                </div>
+                <div class="project-card glass-panel crosshair-corners">
+                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1510511459019-5dda7724fd87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="corner-tl"></div><div class="corner-tr"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">Cyber-Security Node Dashboard</h3>
+                        <span class="status-pill status-stable">SECURE</span>
+                    </div>
+                    <p class="card-desc">A visual 3D representation of an active network under defense, mapping packet flow and threats.</p>
+                    <div class="card-footer"><span class="card-hash">[HASH: e4d2]</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OPEN SOURCE & DEVKIT -->
+    <section class="section-padding container" id="opensource">
+        <div class="section-header">
+            <div class="section-title">Ecosystem Commitment</div>
+            <h2 class="section-headline">Open-Source Repositories & <span>Devkit Architecture</span></h2>
+        </div>
+        <div class="split-layout">
+            <div class="code-block">
+                <div class="code-line"><span class="line-num">1</span><span class="syntax-comment">// Fetch Livcast Stream Token</span></div>
+                <div class="code-line"><span class="line-num">2</span><span class="syntax-keyword">import</span> { LivcastClient } <span class="syntax-keyword">from</span> <span class="syntax-string">'@afrisoft/livcast-core'</span>;</div>
+                <div class="code-line"><span class="line-num">3</span></div>
+                <div class="code-line"><span class="line-num">4</span><span class="syntax-keyword">const</span> <span class="syntax-func">initStream</span> = <span class="syntax-keyword">async</span> () => {</div>
+                <div class="code-line"><span class="line-num">5</span>&nbsp;&nbsp;<span class="syntax-keyword">const</span> client = <span class="syntax-keyword">new</span> <span class="syntax-func">LivcastClient</span>({ region: <span class="syntax-string">'af-east-1'</span> });</div>
+                <div class="code-line"><span class="line-num">6</span>&nbsp;&nbsp;<span class="syntax-keyword">const</span> token = <span class="syntax-keyword">await</span> client.<span class="syntax-func">auth</span>(process.env.API_KEY);</div>
+                <div class="code-line"><span class="line-num">7</span>&nbsp;&nbsp;<span class="syntax-func">return</span> client.<span class="syntax-func">startIngest</span>(token, {</div>
+                <div class="code-line"><span class="line-num">8</span>&nbsp;&nbsp;&nbsp;&nbsp;resolution: <span class="syntax-string">'4K'</span>, bitrate: <span class="syntax-string">12000</span></div>
+                <div class="code-line"><span class="line-num">9</span>&nbsp;&nbsp;});</div>
+                <div class="code-line"><span class="line-num">10</span>};</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="project-card">
+                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">Livcast Core Client SDK</h3>
+                        <span class="status-pill status-stable">v2.4.0</span>
+                    </div>
+                    <p class="card-desc">Flutter/Dart open-source component plugin for high-velocity live streaming deployment.</p>
+                    <div class="card-footer">
+                        <span class="card-hash">[HASH: c8f1]</span>
+                        <button class="terminal-btn">VIEW REPO</button>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">Automation Script Hub</h3>
+                        <span class="status-pill status-beta">SHELL</span>
+                    </div>
+                    <p class="card-desc">Open git modules featuring system tools, macros, and infrastructure automation scripts.</p>
+                    <div class="card-footer">
+                        <span class="card-hash">[HASH: 2d9a]</span>
+                        <button class="terminal-btn">VIEW REPO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INDUSTRIAL & CLINICAL MATRIX -->
+    <section class="section-padding immersive-dark" id="industrial">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-title">Physical Infrastructure</div>
+                <h2 class="section-headline">Industrial & Clinical <span>Systems Matrix</span></h2>
+            </div>
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">Biomedical Pathology Core</h3>
+                        <span class="status-pill status-stable">ACTIVE</span>
+                    </div>
+                    <p class="card-desc">Medical laboratory management software, auto-calibration monitoring, and diagnostic test stream analyzers.</p>
+                    <div class="card-footer"><span class="card-hash">[HASH: f5b3]</span></div>
+                </div>
+                <div class="project-card">
+                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">ATM Sentinel System</h3>
+                        <span class="status-pill status-beta">MONITORING</span>
+                    </div>
+                    <p class="card-desc">System-level telemetry trackers, hardware fault alert mechanics, and physical terminal security modules.</p>
+                    <div class="card-footer"><span class="card-hash">[HASH: a18e]</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REAL-TIME ACTIVITY STREAM -->
+    <section class="section-padding container" id="activity">
+        <video autoplay muted loop playsinline class="activity-video-bg">
+            <source src="https://cdn.pixabay.com/video/2021/09/05/86624-604516106_large.mp4" type="video/mp4">
+        </video>
+        <div style="position: relative; z-index: 2;">
+            <div class="section-header">
+                <div class="section-title">Live Ledger</div>
+                <h2 class="section-headline">Real-Time Activity <span>Stream</span></h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">[2026.06.21] // 14:32 UTC</div>
+                    <div class="timeline-text">Livcast SDK build v2.4.0 deployed to open-source repository.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">[2026.05.14] // 09:15 UTC</div>
+                    <div class="timeline-text">NexGuard IoT hardware integration tests verified over MQTT layer.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">[2026.04.02] // 18:45 UTC</div>
+                    <div class="timeline-text">Kuphanda contextual analysis engine upgraded with new document parser.</div>
+                </div>
+                <div class="timeline-item" style="opacity: 0.5;">
+                    <div class="timeline-date">[2025.11.30] // 11:00 UTC</div>
+                    <div class="timeline-text">Archived: Early prototype of EV Dashboard Simulator moved to cold storage.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="padding: 60px 0; border-top: 1px solid var(--border-glass);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-tertiary);">
+                AFRISOFT.SPACE // SECURE DEV PORTAL // VERIFIED: 0x8f3...9a2
+            </div>
+            <div style="display: flex; gap: 20px;">
+                <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;" class="hover-link">Afrisoft.com</a>
+                <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;" class="hover-link">Contact Nodes</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* ==========================================
+           1. GLOBAL PROJECT REGISTRY
+           ========================================== */
+        const projectRegistry = [
+            { id: 'livcast', title: 'LIVCAST', tier: 'flagship', category: 'software', status: 'stable', hash: '7a3f', desc: 'High-performance live-streaming & production ecosystem for desktop and mobile deployment.', tags: ['streaming', 'mobile', 'desktop', 'software'], img: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'nexguard', title: 'NexGuard', tier: 'flagship', category: 'security', status: 'beta', hash: '9b1c', desc: 'Integrated smart home IoT security mesh, hardware controllers, and alert automation networks.', tags: ['iot', 'security', 'hardware', 'mqtt'], img: 'https://images.unsplash.com/photo-1558002038-1055907df827?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'kuphanda', title: 'Kuphanda', tier: 'flagship', category: 'intelligence', status: 'stable', hash: '4d8e', desc: 'Advanced knowledge management, document processing engines, and intelligent contextual analysis assistants.', tags: ['ai', 'llm', 'docs', 'intelligence'], img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'moneyos', title: 'Money OS', tier: 'flagship', category: 'software', status: 'indev', hash: '2f5a', desc: 'Distributed financial ledger frameworks and enterprise transaction operating architectures.', tags: ['fintech', 'ledger', 'software'], img: 'https://images.unsplash.com/photo-1640340434855-6084b1f4901c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'aivideo', title: 'AI Video Super-Res', tier: 'lab', category: 'intelligence', status: 'experimental', hash: '8c2d', desc: 'Real-time video super-resolution enhancer using WebNN and FFmpeg WASM.', tags: ['ai', 'video', 'webnn', 'intelligence'], img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'audiomod', title: 'Audio Voice Modulator', tier: 'lab', category: 'software', status: 'experimental', hash: '1e9f', desc: 'Low-latency audio voice modulator and changer built on Web Audio API.', tags: ['audio', 'webaudio', 'software'], img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'meshopt', title: 'Network Mesh Optimizer', tier: 'lab', category: 'security', status: 'experimental', hash: '6b4a', desc: 'Distributed network mesh optimizer for peer-to-peer WebRTC communications.', tags: ['webrtc', 'network', 'security'], img: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'wallwatch', title: 'Smart Wall-Watch IoT', tier: 'lab', category: 'security', status: 'experimental', hash: '0d7c', desc: 'Smart Wall-Watch IoT interface controller via MQTT and Tuya Core.', tags: ['iot', 'mqtt', 'security'], img: 'https://images.unsplash.com/photo-1558002038-1055907df827?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
+            { id: 'evdash', title: 'EV Dashboard Simulator', tier: 'lab', category: 'software', status: 'experimental', hash: '5a2b', desc: 'EV / Autonomous Dashboard System Simulator rendered via Canvas2D.', tags: ['ev', 'canvas', 'software'], img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+        ];
+
+        /* ==========================================
+           2. UI RENDERING ENGINE
+           ========================================== */
+        function renderProjects() {
+            const flagshipGrid = document.getElementById('flagship-grid');
+            const labGrid = document.getElementById('lab-grid');
+            
+            projectRegistry.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.id = `proj-${p.id}`;
+                card.setAttribute('data-tags', p.tags.join(' '));
+                card.setAttribute('data-title', p.title.toLowerCase());
+                
+                const statusClass = p.status === 'stable' ? 'status-stable' : p.status === 'beta' ? 'status-beta' : 'status-indev';
+                
+                card.innerHTML = `
+                    <div class="card-bg" style="background-image: url('${p.img}');"></div>
+                    <div class="card-header">
+                        <h3 class="card-title">${p.title}</h3>
+                        <span class="status-pill ${statusClass}">${p.status.toUpperCase()}</span>
+                    </div>
+                    <p class="card-desc">${p.desc}</p>
+                    <div class="card-footer">
+                        <span class="card-hash">[HASH: ${p.hash}]</span>
+                        ${p.tier === 'flagship' ? `<button class="terminal-btn" onclick="openTerminal('${p.id}')">>_ TERMINAL</button>` : ''}
+                    </div>
+                `;
+                
+                if (p.tier === 'flagship') flagshipGrid.appendChild(card);
+                else labGrid.appendChild(card);
+            });
+        }
+
+        /* ==========================================
+           3. OMNI-SEARCH & FILTERING
+           ========================================== */
+        const searchInput = document.getElementById('omni-search');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.project-card').forEach(card => {
+                const tags = card.getAttribute('data-tags');
+                const title = card.getAttribute('data-title');
+                if (query === '' || tags.includes(query) || title.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        });
+
+        // Global "/" focus
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            if (e.metaKey && e.key === 'e') { e.preventDefault(); toggleCopilot(true); }
+            if (e.metaKey && e.key === 'p') { e.preventDefault(); toggleDiagnostics(); }
+        });
+
+        /* ==========================================
+           4. TERMINAL EMULATOR
+           ========================================== */
+        const terminalWindow = document.getElementById('terminal-window');
+        const terminalBody = document.getElementById('terminal-body');
+        const terminalInput = document.getElementById('terminal-input');
+        let activeProjectId = null;
+
+        function openTerminal(projectId) {
+            activeProjectId = projectId;
+            const project = projectRegistry.find(p => p.id === projectId);
+            terminalWindow.classList.add('active');
+            terminalBody.innerHTML = `<div>Connected to ${project.title} subsystem.</div><div>Type 'status' or 'help'.</div>`;
+            terminalInput.value = '';
+            terminalInput.focus();
+        }
+
+        function closeTerminal() { terminalWindow.classList.remove('active'); }
+
+        terminalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = terminalInput.value.trim().toLowerCase();
+                const project = projectRegistry.find(p => p.id === activeProjectId);
+                
+                terminalBody.innerHTML += `<div style="color: #fff"><span style="color:var(--accent-cyan)">➜ ~</span> ${cmd}</div>`;
+                
+                if (cmd === 'help') {
+                    terminalBody.innerHTML += `<div>Commands: 'status', 'ping', 'clear'</div>`;
+                } else if (cmd === 'status') {
+                    terminalBody.innerHTML += `<div>{ "status": "${project.status}", "uptime": "99.9%", "hash": "${project.hash}" }</div>`;
+                } else if (cmd === 'ping') {
+                    terminalBody.innerHTML += `<div>Ping reply: 14ms. Connection secure.</div>`;
+                } else if (cmd === 'clear') {
+                    terminalBody.innerHTML = '';
+                } else {
+                    terminalBody.innerHTML += `<div style="color: #ff4d4d">Command not found: ${cmd}</div>`;
+                }
+                
+                terminalInput.value = '';
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+        });
+
+        /* ==========================================
+           5. AFRISOFT COPILOT (SIMULATED AI)
+           ========================================== */
+        const copilotOverlay = document.getElementById('copilot-overlay');
+        const copilotInput = document.getElementById('copilot-input');
+
+        function toggleCopilot(state) {
+            copilotOverlay.classList.toggle('active', state);
+            if (state) copilotInput.focus();
+        }
+
+        function copilotSearch(query) {
+            copilotInput.value = query;
+            processCopilotQuery();
+        }
+
+        copilotInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') processCopilotQuery();
+        });
+
+        function processCopilotQuery() {
+            const q = copilotInput.value.toLowerCase();
+            let targetCard = null;
+
+            if (q.includes('iot') || q.includes('security')) targetCard = document.getElementById('proj-nexguard');
+            else if (q.includes('lab') || q.includes('experiment')) targetCard = document.getElementById('proj-aivideo');
+            else if (q.includes('repo') || q.includes('open source')) targetCard = document.getElementById('opensource');
+            else if (q.includes('stream') || q.includes('livcast')) targetCard = document.getElementById('proj-livcast');
+            else if (q.includes('money')) targetCard = document.getElementById('proj-moneyos');
+
+            if (targetCard) {
+                toggleCopilot(false);
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Highlight effect
+                targetCard.style.boxShadow = '0 0 40px var(--accent-cyan)';
+                targetCard.style.borderColor = 'var(--accent-cyan)';
+                setTimeout(() => {
+                    targetCard.style.boxShadow = '';
+                    targetCard.style.borderColor = '';
+                }, 2500);
+            }
+        }
+
+        /* ==========================================
+           6. CUSTOM MAGNETIC CURSOR
+           ========================================== */
+        const dot = document.querySelector('.cursor-dot');
+        const ring = document.querySelector('.cursor-ring');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+        window.addEventListener('mousemove', e => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            dot.style.left = mouseX + 'px';
+            dot.style.top = mouseY + 'px';
+        });
+
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            ring.style.left = ringX + 'px';
+            ring.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        document.querySelectorAll('button, a, .project-card, .quadrant-card, .suggestion-chip, input').forEach(el => {
+            el.addEventListener('mouseenter', () => ring.classList.add('hover-active'));
+            el.addEventListener('mouseleave', () => ring.classList.remove('hover-active'));
+        });
+
+        /* ==========================================
+           7. HERO CANVAS (PARTICLE NODE GRAPH)
+           ========================================== */
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = document.getElementById('hero').offsetHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 0.5;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 243, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 80; i++) particles.push(new Particle());
+        }
+
+        function connectParticles() {
+            let maxDist = 120;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < maxDist) {
+                        let opacity = 1 - (dist / maxDist);
+                        ctx.strokeStyle = `rgba(0, 243, 255, ${opacity * 0.2})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+                
+                // Connect to mouse
+                let dxm = particles[i].x - mouseX;
+                let dym = particles[i].y - mouseY;
+                let distM = Math.sqrt(dxm * dxm + dym * dym);
+                if (distM < 200) {
+                    let opacity = 1 - (distM / 200);
+                    ctx.strokeStyle = `rgba(123, 47, 247, ${opacity * 0.5})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(mouseX, mouseY);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            connectParticles();
+            requestAnimationFrame(animateCanvas);
+        }
+        initParticles();
+        animateCanvas();
+
+        /* ==========================================
+           8. DIAGNOSTICS OVERLAY (Cmd+P)
+           ========================================== */
+        const diagEl = document.getElementById('diagnostics');
+        let diagVisible = false;
+        let lastTime = performance.now();
+        let frames = 0;
+        let fps = 60;
+
+        function toggleDiagnostics() {
+            diagVisible = !diagVisible;
+            diagEl.style.display = diagVisible ? 'block' : 'none';
+        }
+
+        function updateDiagnostics() {
+            frames++;
+            const now = performance.now();
+            if (now >= lastTime + 1000) {
+                fps = Math.round((frames * 1000) / (now - lastTime));
+                lastTime = now;
+                frames = 0;
+                const domNodes = document.getElementsByTagName('*').length;
+                const mem = performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1048576) : 'N/A';
+                diagEl.innerHTML = `FPS: ${fps} | DOM: ${domNodes} | MEM: ${mem}MB`;
+            }
+            requestAnimationFrame(updateDiagnostics);
+        }
+        updateDiagnostics();
+
+        /* ==========================================
+           9. INITIALIZATION
+           ========================================== */
+        window.addEventListener('load', () => {
+            renderProjects();
+            setTimeout(() => {
+                document.getElementById('boot-sequence').classList.add('fade-out');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
