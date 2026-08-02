@@ -3,981 +3,1783 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFRISOFT.SPACE // System Architecture</title>
-    <meta name="description" content="The central discovery matrix and innovation ecosystem for AfriSoft Technologies.">
-
-    <!-- PREMIUM TYPOGRAPHY -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-
+    <title>Fountain of Victory - Church Attendance & Membership System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
     <style>
-        /* ==========================================
-           1. CSS VARIABLES & SYSTEM TOKENS
-           ========================================== */
+        /* ===== CSS VARIABLES ===== */
         :root {
-            --bg-canvas: #050508;
-            --bg-surface: #0a0b10;
-            --bg-elevated: #0f1117;
-            --accent-cyan: #00f3ff;
-            --accent-violet: #7b2ff7;
-            --accent-green: #00ff9d;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --text-tertiary: #545468;
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --border-active: rgba(0, 243, 255, 0.4);
-            --shadow-glow-cyan: 0 0 20px rgba(0, 243, 255, 0.15);
-            --shadow-glow-violet: 0 0 20px rgba(123, 47, 247, 0.15);
-            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --royal-blue: #1E3A8A;
+            --royal-blue-light: #2546a8;
+            --royal-blue-dark: #15296b;
+            --gold: #F59E0B;
+            --gold-light: #fbbf24;
+            --gold-dark: #d97706;
+            --white: #FFFFFF;
+            --bg-light: #f4f6fb;
+            --green: #16a34a;
+            --gray: #6b7280;
+            --orange: #f59e0b;
+            --purple: #7c3aed;
         }
 
-        /* ==========================================
-           2. GLOBAL RESET & BASE STYLES
-           ========================================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        html { scroll-behavior: smooth; }
-
+        /* ===== GLOBAL ===== */
+        * { box-sizing: border-box; }
         body {
-            background-color: var(--bg-canvas);
-            color: var(--text-primary);
-            font-family: 'Inter', system-ui, sans-serif;
-            font-weight: 300;
-            overflow-x: hidden;
-            cursor: none; /* Custom Cursor System */
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-light);
+            color: #333;
         }
+        .bg-blue { background-color: var(--royal-blue) !important; }
+        .text-gold { color: var(--gold) !important; }
 
-        ::selection { background: var(--accent-cyan); color: var(--bg-canvas); }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-canvas); }
-        ::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
-
-        /* ==========================================
-           3. SYSTEM BOOT SEQUENCE
-           ========================================== */
-        #boot-sequence {
-            position: fixed; inset: 0; z-index: 10000;
-            background: var(--bg-canvas);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--accent-green);
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+        /* ===== BUTTONS ===== */
+        .btn-blue {
+            background-color: var(--royal-blue);
+            color: white; border: none; font-weight: 500; transition: all 0.2s;
         }
-        #boot-sequence.fade-out { opacity: 0; visibility: hidden; }
-        .boot-text { font-size: 14px; margin: 2px 0; opacity: 0; animation: bootFade 0.3s forwards; }
-        @keyframes bootFade { to { opacity: 1; } }
+        .btn-blue:hover { background-color: var(--royal-blue-dark); color: white; }
 
-        /* ==========================================
-           4. CUSTOM CURSOR & MAGNETIC SYSTEM
-           ========================================== */
-        .cursor-dot {
-            position: fixed; top: 0; left: 0; width: 6px; height: 6px;
-            background: var(--accent-cyan); border-radius: 50%;
-            pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background 0.2s;
+        .btn-gold {
+            background-color: var(--gold);
+            color: var(--royal-blue); border: none; font-weight: 600; transition: all 0.2s;
         }
-        .cursor-ring {
-            position: fixed; top: 0; left: 0; width: 32px; height: 32px;
-            border: 1px solid var(--text-tertiary); border-radius: 50%;
-            pointer-events: none; z-index: 9998;
-            transform: translate(-50%, -50%);
-            transition: transform 0.15s ease-out, width 0.3s, height 0.3s, border-color 0.3s, background 0.3s;
-            mix-blend-mode: difference;
-        }
-        .cursor-ring.hover-active {
-            width: 48px; height: 48px; border-color: var(--accent-cyan);
-            background: rgba(0, 243, 255, 0.1);
-        }
+        .btn-gold:hover { background-color: var(--gold-dark); color: white; }
 
-        /* ==========================================
-           5. LAYOUT & GLASSMORPHISM UTILITIES
-           ========================================== */
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
-        
-        .glass-panel {
-            background: rgba(10, 11, 16, 0.6);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-        }
-
-        .section-padding { padding: 120px 0; }
-
-        .section-header { margin-bottom: 60px; }
-        .section-title {
-            font-size: 14px; font-weight: 500; text-transform: uppercase;
-            letter-spacing: 3px; color: var(--accent-cyan);
-            font-family: 'JetBrains Mono', monospace; margin-bottom: 12px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .section-title::before { content: ''; width: 8px; height: 8px; background: var(--accent-cyan); border-radius: 50%; box-shadow: 0 0 10px var(--accent-cyan); }
-        .section-headline { font-size: 48px; font-weight: 200; letter-spacing: -1.5px; line-height: 1.1; }
-        .section-headline span { font-weight: 700; }
-
-        /* ==========================================
-           6. HERO SECTION & WEBGL CANVAS
-           ========================================== */
-        #hero {
-            position: relative; height: 100vh; min-height: 700px;
+        /* ===== LOGO STYLING ===== */
+        .brand-icon {
+            width: 48px; height: 48px;
             display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
         }
-        #hero-canvas {
-            position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;
+        .brand-icon-sm {
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .hero-overlay {
-            position: relative; z-index: 2; text-align: center;
-            max-width: 1000px; padding: 0 20px;
+        .home-logo {
+            width: 120px; height: 120px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: center;
+            filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.3));
         }
-        .hero-title {
-            font-size: clamp(40px, 7vw, 96px);
-            font-weight: 900; line-height: 0.95; letter-spacing: -3px;
-            margin-bottom: 40px;
-            background: linear-gradient(180deg, #fff 0%, #a0a0b0 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .hero-title span {
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+        .logo-svg { width: 100%; height: 100%; }
 
-        /* Omni-Search Console */
-        .search-console {
-            max-width: 600px; margin: 0 auto; position: relative;
+        /* ===== HOME PAGE ===== */
+        .home-page {
+            background: linear-gradient(135deg, var(--royal-blue-dark) 0%, var(--royal-blue) 50%, var(--royal-blue-light) 100%);
+            position: relative; overflow: hidden;
         }
-        .search-input {
-            width: 100%; padding: 20px 24px; padding-right: 80px;
-            background: rgba(15, 17, 23, 0.8); backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glass); border-radius: 12px;
-            color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 16px;
-            outline: none; transition: var(--transition-smooth);
+        .home-page::before {
+            content: ''; position: absolute; top: -50%; right: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
         }
-        .search-input:focus { border-color: var(--accent-cyan); box-shadow: var(--shadow-glow-cyan); }
-        .search-input::placeholder { color: var(--text-tertiary); }
-        .search-badge {
-            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            background: var(--bg-canvas); border: 1px solid var(--border-glass);
-            padding: 4px 8px; border-radius: 4px; font-size: 12px; color: var(--text-tertiary);
-            font-family: 'JetBrains Mono', monospace; pointer-events: none;
+        .home-navbar {
+            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); padding: 1rem 0;
         }
+        .brand-name { font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+        .brand-subtitle { font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); line-height: 1.2; }
 
-        /* ==========================================
-           7. ECOSYSTEM QUADRANTS
-           ========================================== */
-        .quadrant-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        .home-card {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px;
+            padding: 2.5rem 2rem; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; height: 100%;
         }
-        .quadrant-card {
-            padding: 32px; border-radius: 12px; background: var(--bg-surface);
-            border: 1px solid var(--border-glass); cursor: pointer;
-            transition: var(--transition-smooth); position: relative; overflow: hidden;
+        .home-card:hover {
+            background: rgba(255, 255, 255, 0.15); transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
-        .quadrant-card::before {
-            content: ''; position: absolute; inset: 0; opacity: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.1), transparent 70%);
-            transition: opacity 0.4s ease;
+        .home-card h2 { color: white; margin-bottom: 0.75rem; }
+        .home-card p { color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        .home-card-icon {
+            width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
         }
-        .quadrant-card:hover { border-color: var(--accent-cyan); transform: translateY(-4px); }
-        .quadrant-card:hover::before { opacity: 1; }
-        .quadrant-number { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-tertiary); margin-bottom: 40px; display: block; }
-        .quadrant-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-        .quadrant-desc { font-size: 14px; color: var(--text-secondary); }
+        .admin-card .home-card-icon { background: var(--gold); color: var(--royal-blue); }
+        .desk-card .home-card-icon { background: rgba(255, 255, 255, 0.15); color: white; border: 2px solid rgba(255, 255, 255, 0.3); }
+        .home-footer { background: rgba(0, 0, 0, 0.2); }
 
-        /* ==========================================
-           8. PROJECT CARDS (Flagships & Labs)
-           ========================================== */
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        
-        .project-card {
-            background: var(--bg-surface); border: 1px solid var(--border-glass);
-            border-radius: 12px; padding: 28px; position: relative; overflow: hidden;
-            transition: var(--transition-smooth); display: flex; flex-direction: column;
+        /* ===== ADMIN NAVBAR & LAYOUT ===== */
+        .admin-navbar {
+            background: var(--royal-blue) !important; padding: 0.6rem 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); height: 56px; z-index: 1030;
         }
-        .project-card:hover {
-            border-color: var(--accent-violet); transform: scale(1.02);
-            box-shadow: var(--shadow-glow-violet);
-        }
-        .project-card.hidden { display: none; opacity: 0; }
+        .admin-layout { display: flex; padding-top: 56px; min-height: 100vh; }
 
-        .card-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
-            opacity: 0.15; z-index: 0; transition: opacity 0.4s ease;
+        /* ===== SIDEBAR ===== */
+        .admin-sidebar {
+            width: 250px; background: var(--royal-blue); position: fixed;
+            top: 56px; bottom: 0; left: 0; overflow-y: auto; z-index: 1020;
+            transition: transform 0.3s ease; padding: 1rem 0;
         }
-        .project-card:hover .card-bg { opacity: 0.4; }
-        
-        .project-card::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(10,11,16,0.7) 0%, rgba(10,11,16,0.95) 100%);
-            z-index: 1; pointer-events: none; transition: background 0.4s ease;
+        .admin-sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.7); padding: 0.85rem 1.5rem; cursor: pointer;
+            display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem;
+            transition: all 0.2s; border-left: 3px solid transparent;
         }
-        .project-card:hover::after {
-            background: linear-gradient(180deg, rgba(10,11,16,0.5) 0%, rgba(10,11,16,0.85) 100%);
+        .admin-sidebar .nav-link i { font-size: 1.1rem; width: 24px; text-align: center; }
+        .admin-sidebar .nav-link:hover { background: rgba(255, 255, 255, 0.08); color: white; }
+        .admin-sidebar .nav-link.active {
+            background: rgba(245, 158, 11, 0.15); color: var(--gold);
+            border-left-color: var(--gold); font-weight: 600;
         }
-        
-        .card-header, .card-desc, .card-footer { position: relative; z-index: 2; }
-        
-        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px; }
-        .card-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-        
-        .status-pill {
-            font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 4px 10px;
-            border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;
-            backdrop-filter: blur(4px);
-        }
-        .status-stable { background: rgba(0, 255, 157, 0.1); color: var(--accent-green); border: 1px solid rgba(0, 255, 157, 0.3); }
-        .status-beta { background: rgba(0, 243, 255, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 243, 255, 0.3); }
-        .status-indev { background: rgba(123, 47, 247, 0.1); color: var(--accent-violet); border: 1px solid rgba(123, 47, 247, 0.3); }
+        .sidebar-divider { border-color: rgba(255, 255, 255, 0.15); margin: 1rem 1.5rem; }
+        .sidebar-overlay { display: none; position: fixed; top: 56px; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1010; }
+        .sidebar-overlay.show { display: block; }
 
-        .card-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; flex-grow: 1; }
-        
-        .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
-        
-        .card-hash {
-            font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-tertiary);
-            opacity: 0.5; transition: opacity 0.3s;
-        }
-        .project-card:hover .card-hash { opacity: 1; color: var(--accent-cyan); }
+        .admin-main { flex: 1; margin-left: 250px; padding: 1.5rem; min-width: 0; }
+        .page-header { padding-bottom: 0.5rem; }
 
-        .terminal-btn {
-            background: transparent; border: 1px solid var(--border-glass); color: var(--text-secondary);
-            padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: none;
-            font-family: 'JetBrains Mono', monospace; transition: var(--transition-smooth);
-            display: flex; align-items: center; gap: 6px; backdrop-filter: blur(4px);
+        /* ===== STAT CARDS ===== */
+        .stat-card {
+            background: white; border-radius: 16px; padding: 1.25rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid; height: 100%;
         }
-        .terminal-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0, 243, 255, 0.05); }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); }
+        .stat-blue { border-left-color: var(--royal-blue); }
+        .stat-green { border-left-color: var(--green); }
+        .stat-gray { border-left-color: var(--gray); }
+        .stat-orange { border-left-color: var(--orange); }
+        .stat-purple { border-left-color: var(--purple); }
+        .stat-icon {
+            width: 44px; height: 44px; border-radius: 12px; display: flex;
+            align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.5rem;
+        }
+        .stat-blue .stat-icon { background: rgba(30, 58, 138, 0.1); color: var(--royal-blue); }
+        .stat-green .stat-icon { background: rgba(22, 163, 74, 0.1); color: var(--green); }
+        .stat-gray .stat-icon { background: rgba(107, 114, 128, 0.1); color: var(--gray); }
+        .stat-orange .stat-icon { background: rgba(245, 158, 11, 0.1); color: var(--orange); }
+        .stat-purple .stat-icon { background: rgba(124, 58, 237, 0.1); color: var(--purple); }
+        .stat-value { font-size: 1.8rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; }
+        .stat-label { font-size: 0.8rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Terminal Emulator Overlay */
-        .terminal-window {
-            position: fixed; bottom: 20px; right: 20px; width: 500px; max-width: calc(100vw - 40px);
-            height: 300px; background: rgba(5, 5, 8, 0.95); backdrop-filter: blur(20px);
-            border: 1px solid var(--accent-cyan); border-radius: 8px; z-index: 1000;
-            display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0,0,0,0.5);
-            transform: translateY(20px); opacity: 0; pointer-events: none; transition: all 0.3s ease;
-        }
-        .terminal-window.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
-        .terminal-header { padding: 10px 16px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center; }
-        .terminal-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-green); }
-        .terminal-close { cursor: pointer; color: var(--text-tertiary); font-size: 16px; background: none; border: none; }
-        .terminal-body { padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-green); overflow-y: auto; flex-grow: 1; }
-        .terminal-input-line { display: flex; align-items: center; padding-top: 8px; }
-        .terminal-prompt { color: var(--accent-cyan); margin-right: 8px; }
-        .terminal-input { background: transparent; border: none; outline: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 13px; flex-grow: 1; }
+        /* ===== DASHBOARD CARDS ===== */
+        .dashboard-card { border: none; border-radius: 16px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); overflow: hidden; }
+        .dashboard-card .card-header { background: white; border-bottom: 1px solid #eef0f5; padding: 1rem 1.25rem; }
+        .dashboard-card .card-header h5 { font-size: 1rem; font-weight: 600; }
 
-        /* ==========================================
-           9. FOUNDRY & INDUSTRIAL MATRIX
-           ========================================== */
-        .immersive-dark { background: var(--bg-canvas); border-top: 1px solid var(--border-glass); border-bottom: 1px solid var(--border-glass); }
-        .crosshair-corners { position: relative; }
-        .crosshair-corners::before, .crosshair-corners::after,
-        .crosshair-corners > .corner-tl, .crosshair-corners > .corner-tr {
-            content: ''; position: absolute; width: 12px; height: 12px; border: 1px solid var(--accent-cyan);
-            opacity: 0.5; transition: opacity 0.3s; z-index: 3;
-        }
-        .crosshair-corners::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
-        .crosshair-corners::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
-        .crosshair-corners > .corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
-        .crosshair-corners > .corner-tl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
-        .crosshair-corners:hover::before, .crosshair-corners:hover::after,
-        .crosshair-corners:hover > .corner-tr, .crosshair-corners:hover > .corner-tl { opacity: 1; }
+        .recent-list { max-height: 320px; overflow-y: auto; }
+        .recent-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; border-bottom: 1px solid #f0f0f5; transition: background 0.15s; }
+        .recent-item:hover { background: #f8f9fc; }
+        .recent-item:last-child { border-bottom: none; }
+        .recent-item-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .recent-item-text { flex: 1; min-width: 0; }
+        .recent-item-text .name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0; }
+        .recent-item-text .detail { font-size: 0.78rem; color: var(--gray); }
+        .recent-item-time { font-size: 0.75rem; color: var(--gray); white-space: nowrap; }
 
-        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .code-block {
-            background: #000; border-radius: 8px; padding: 24px; font-family: 'JetBrains Mono', monospace;
-            font-size: 13px; line-height: 1.6; border: 1px solid var(--border-glass); position: relative;
-        }
-        .code-line { display: flex; }
-        .line-num { color: var(--text-tertiary); width: 30px; text-align: right; margin-right: 15px; user-select: none; }
-        .syntax-keyword { color: var(--accent-violet); }
-        .syntax-func { color: var(--accent-cyan); }
-        .syntax-string { color: var(--accent-green); }
-        .syntax-comment { color: var(--text-tertiary); font-style: italic; }
+        /* ===== STATUS BADGES ===== */
+        .status-badge { padding: 0.3em 0.75em; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-active { background: rgba(22, 163, 74, 0.12); color: var(--green); }
+        .status-inactive { background: rgba(107, 114, 128, 0.12); color: var(--gray); }
+        .status-visitor { background: rgba(245, 158, 11, 0.12); color: var(--orange); }
 
-        /* ==========================================
-           10. ACTIVITY STREAM (LIVE LEDGER)
-           ========================================== */
-        #activity { position: relative; overflow: hidden; }
-        .activity-video-bg {
-            position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
-            width: auto; height: auto; z-index: 0; transform: translate(-50%, -50%);
-            opacity: 0.2; object-fit: cover; filter: hue-rotate(180deg) contrast(1.2);
-        }
-        .timeline { position: relative; padding-left: 30px; border-left: 1px solid var(--border-glass); }
-        .timeline-item { margin-bottom: 32px; position: relative; }
-        .timeline-item::before {
-            content: ''; position: absolute; left: -36px; top: 4px; width: 12px; height: 12px;
-            background: var(--bg-canvas); border: 2px solid var(--accent-cyan); border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-cyan); animation: pulse 2s infinite; z-index: 2;
-        }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 243, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); } }
-        .timeline-date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-cyan); margin-bottom: 4px; }
-        .timeline-text { font-size: 15px; color: var(--text-secondary); }
+        .table > :not(caption) > * > * { padding: 0.75rem 1rem; }
+        .table thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); font-weight: 600; }
 
-        /* ==========================================
-           11. AFRISOFT COPILOT (AI OVERLAY)
-           ========================================== */
-        .copilot-orb {
-            position: fixed; bottom: 30px; right: 30px; width: 56px; height: 56px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
-            border-radius: 50%; cursor: none; z-index: 1000; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); transition: transform 0.3s;
-        }
-        .copilot-orb:hover { transform: scale(1.1); }
-        .copilot-orb svg { width: 24px; height: 24px; fill: white; }
+        /* ===== ATTENDANCE DESK ===== */
+        .desk-main { padding: 76px 1.5rem 1.5rem; min-height: 100vh; }
+        .desk-counter-bar { background: linear-gradient(135deg, var(--royal-blue), var(--royal-blue-light)); border-radius: 16px; padding: 1.25rem 1.5rem; box-shadow: 0 4px 16px rgba(30, 58, 138, 0.2); }
+        .desk-counter { font-size: 2.5rem; font-weight: 800; color: var(--gold); line-height: 1; }
 
-        .copilot-overlay {
-            position: fixed; inset: 0; background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(20px);
-            z-index: 2000; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .copilot-overlay.active { opacity: 1; pointer-events: auto; }
-        .copilot-box { width: 600px; max-width: 90%; background: var(--bg-surface); border: 1px solid var(--accent-cyan); border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
-        .copilot-header { padding: 16px 24px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; }
-        .copilot-title { font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-size: 14px; }
-        .copilot-input { width: 100%; padding: 24px; background: transparent; border: none; outline: none; color: var(--text-primary); font-size: 20px; font-family: 'Inter', sans-serif; }
-        .copilot-input::placeholder { color: var(--text-tertiary); }
-        .copilot-suggestions { padding: 0 24px 24px; display: flex; flex-wrap: wrap; gap: 8px; }
-        .suggestion-chip { background: var(--bg-elevated); border: 1px solid var(--border-glass); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: var(--text-secondary); cursor: none; transition: all 0.2s; }
-        .suggestion-chip:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .member-card { background: white; border-radius: 14px; padding: 1rem; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); height: 100%; }
+        .member-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); }
+        .member-card.already-present { opacity: 0.6; border-color: var(--green); }
+        .member-card .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; flex-shrink: 0; }
 
-        /* ==========================================
-           12. DIAGNOSTICS & UTILITY
-           ========================================== */
-        #diagnostics {
-            position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 8px 12px;
-            font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent-green);
-            border-radius: 4px; z-index: 5000; display: none; border: 1px solid var(--border-glass);
-        }
-        #search-highlight { position: fixed; pointer-events: none; z-index: 999; border: 2px solid var(--accent-cyan); border-radius: 8px; box-shadow: 0 0 20px var(--accent-cyan); opacity: 0; transition: all 0.3s ease; }
+        .avatar-blue { background: rgba(30, 58, 138, 0.1); color: var(--royal-blue); }
+        .avatar-green { background: rgba(22, 163, 74, 0.1); color: var(--green); }
+        .avatar-orange { background: rgba(245, 158, 11, 0.1); color: var(--orange); }
+        .avatar-purple { background: rgba(124, 58, 237, 0.1); color: var(--purple); }
+        .avatar-gray { background: rgba(107, 114, 128, 0.1); color: var(--gray); }
 
-        /* ==========================================
-           13. RESPONSIVE & ACCESSIBILITY
-           ========================================== */
-        @media (max-width: 1024px) {
-            .quadrant-grid { grid-template-columns: repeat(2, 1fr); }
-            .split-layout { grid-template-columns: 1fr; }
+        .today-list { max-height: 400px; overflow-y: auto; }
+        .today-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1rem; border-bottom: 1px solid #f0f0f5; }
+        .today-item:last-child { border-bottom: none; }
+        .today-item .check { color: var(--green); font-size: 1.1rem; }
+
+        .coming-soon-card { border: 2px dashed #d1d5db; background: #fafafa; }
+        .coming-soon-icon { width: 64px; height: 64px; margin: 0 auto 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--gold); }
+
+        .dept-card { background: white; border-radius: 12px; padding: 1.25rem; text-align: center; border: 1px solid #eef0f5; transition: all 0.2s; }
+        .dept-card:hover { border-color: var(--gold); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); }
+        .dept-icon { width: 50px; height: 50px; margin: 0 auto 0.5rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .dept-count { font-size: 1.5rem; font-weight: 700; }
+        .dept-name { font-size: 0.85rem; color: var(--gray); }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c5c5c5; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+        .admin-sidebar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        .admin-sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
+
+        @media (max-width: 991.98px) {
+            .admin-sidebar { transform: translateX(-100%); }
+            .admin-sidebar.show { transform: translateX(0); }
+            .admin-main { margin-left: 0; }
         }
         @media (max-width: 768px) {
-            .container { padding: 0 20px; }
-            .section-padding { padding: 80px 0; }
-            .section-headline { font-size: 32px; }
-            .quadrant-grid { grid-template-columns: 1fr; }
-            body { cursor: auto; }
-            .cursor-dot, .cursor-ring { display: none; }
-            .terminal-btn, .suggestion-chip, .copilot-orb { cursor: pointer; }
+            .stat-value { font-size: 1.4rem; }
+            .stat-label { font-size: 0.7rem; }
+            .stat-card { padding: 0.85rem; }
+            .stat-icon { width: 36px; height: 36px; font-size: 1.1rem; }
+            .home-card { padding: 2rem 1.5rem; }
+            .desk-counter { font-size: 2rem; }
+        }
+        @media (max-width: 576px) {
+            .admin-main, .desk-main { padding: 1rem; }
+            .desk-main { padding-top: 72px; }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-            #hero-canvas { display: none; }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .admin-page { animation: fadeIn 0.3s ease; }
+        .member-card { animation: fadeIn 0.2s ease; }
     </style>
 </head>
 <body>
 
-    <!-- BOOT SEQUENCE -->
-    <div id="boot-sequence">
-        <div class="boot-text" style="animation-delay: 0.1s">> INITIALIZING AFRISOFT KERNEL...</div>
-        <div class="boot-text" style="animation-delay: 0.4s">> MOUNTING ECOSYSTEM QUADRANTS...</div>
-        <div class="boot-text" style="animation-delay: 0.7s">> VERIFYING CRYPTOGRAPHIC STATE...</div>
-        <div class="boot-text" style="animation-delay: 1.0s">> RENDERING WEBGL CONTEXT...</div>
-        <div class="boot-text" style="animation-delay: 1.3s">> SYSTEM READY.</div>
-    </div>
+<!-- ============ ALERT CONTAINER ============ -->
+<div id="alertContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
 
-    <!-- CUSTOM CURSOR -->
-    <div class="cursor-dot"></div>
-    <div class="cursor-ring"></div>
+<!-- ============ EMBEDDED LOGO SVG TEMPLATE ============ -->
+<svg style="display:none;">
+    <symbol id="fov-logo" viewBox="0 0 64 64">
+        <!-- Outer Purple Ring -->
+        <circle cx="32" cy="32" r="30" fill="#6b21a8"></circle>
+        <circle cx="32" cy="32" r="26" fill="#1E3A8A"></circle>
+        <!-- Gold/Yellow backing -->
+        <circle cx="32" cy="32" r="22" fill="#F59E0B"></circle>
+        <!-- Radiating pattern -->
+        <path d="M32 10 L36 28 L54 32 L36 36 L32 54 L28 36 L10 32 L28 28 Z" fill="#ffffff" opacity="0.4"></path>
+        <!-- Open Book -->
+        <path d="M18 28 C24 24 28 24 32 26 C36 24 40 24 46 28 L46 40 C40 36 36 36 32 38 C28 36 24 36 18 40 Z" fill="#ffffff"></path>
+        <line x1="32" y1="26" x2="32" y2="38" stroke="#1E3A8A" stroke-width="1.5"></line>
+        <!-- White Pillar -->
+        <rect x="29" y="38" width="6" height="12" fill="#ffffff"></rect>
+        <ellipse cx="32" cy="50" rx="12" ry="3" fill="#ffffff"></ellipse>
+        <!-- Water drops (Fountain) -->
+        <circle cx="26" cy="40" r="2" fill="#60a5fa"></circle>
+        <circle cx="38" cy="40" r="2" fill="#60a5fa"></circle>
+    </symbol>
+</svg>
 
-    <!-- DIAGNOSTICS OVERLAY (Cmd+P) -->
-    <div id="diagnostics">FPS: 60 | DOM: 0 | MEM: 0MB</div>
-
-    <!-- TERMINAL EMULATOR -->
-    <div class="terminal-window" id="terminal-window">
-        <div class="terminal-header">
-            <span class="terminal-title">AFRISOFT_SHELL // ROOT@LOCALHOST:~$</span>
-            <button class="terminal-close" onclick="closeTerminal()">[X]</button>
-        </div>
-        <div class="terminal-body" id="terminal-body">
-            <div>Welcome to AFRISOFT Shell. Type 'help' for commands.</div>
-        </div>
-        <div style="padding: 12px 16px; border-top: 1px solid var(--border-glass);">
-            <div class="terminal-input-line">
-                <span class="terminal-prompt">➜ ~</span>
-                <input type="text" class="terminal-input" id="terminal-input" autofocus>
-            </div>
-        </div>
-    </div>
-
-    <!-- AFRISOFT COPILOT -->
-    <div class="copilot-orb" onclick="toggleCopilot(true)">
-        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-    </div>
-    <div class="copilot-overlay" id="copilot-overlay">
-        <div class="copilot-box glass-panel">
-            <div class="copilot-header">
-                <span class="copilot-title">AFRISOFT COPILOT // ONLINE</span>
-                <button class="terminal-close" onclick="toggleCopilot(false)">[X]</button>
-            </div>
-            <input type="text" class="copilot-input" id="copilot-input" placeholder="Ask Copilot to find projects, status, or tech...">
-            <div class="copilot-suggestions">
-                <div class="suggestion-chip" onclick="copilotSearch('Show me IoT projects')">Show me IoT projects</div>
-                <div class="suggestion-chip" onclick="copilotSearch('What is in the Innovation Lab?')">What is in the Innovation Lab?</div>
-                <div class="suggestion-chip" onclick="copilotSearch('Open Source Repos')">Open Source Repos</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- HERO SECTION -->
-    <section id="hero">
-        <canvas id="hero-canvas"></canvas>
-        <div class="hero-overlay">
-            <h1 class="hero-title">AFRISOFT.SPACE<br><span>NEXT-GEN SOFTWARES</span></h1>
-            <div style="margin-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary);">
-                Download our products at <a href="https://afrisoft.store" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">AFRISOFT STORE</a>
-            </div>
-            <div class="search-console" style="margin-top: 30px;">
-                <input type="text" class="search-input" id="omni-search" placeholder="Search the ecosystem, projects, or tech stack...">
-                <div class="search-badge">[ / ]</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ECOSYSTEM QUADRANTS -->
-    <section class="section-padding container" id="quadrants">
-        <div class="section-header">
-            <div class="section-title">System Quadrants</div>
-            <h2 class="section-headline">Intent <span>Navigation</span></h2>
-        </div>
-        <div class="quadrant-grid">
-            <div class="quadrant-card">
-                <span class="quadrant-number">01 // SOFTWARE</span>
-                <h3 class="quadrant-title">Software Systems</h3>
-                <p class="quadrant-desc">Desktop, Mobile, and Web execution layers.</p>
-            </div>
-            <div class="quadrant-card">
-                <span class="quadrant-number">02 // INTELLIGENCE</span>
-                <h3 class="quadrant-title">Intelligence Lab</h3>
-                <p class="quadrant-desc">LLMs, automation, and local data analysis tools.</p>
-            </div>
-            <div class="quadrant-card">
-                <span class="quadrant-number">03 // FOUNDRY</span>
-                <h3 class="quadrant-title">RE-Reality & Foundry</h3>
-                <p class="quadrant-desc">3D environments, WebGL simulations, and VFX assets.</p>
-            </div>
-            <div class="quadrant-card">
-                <span class="quadrant-number">04 // DEVKIT</span>
-                <h3 class="quadrant-title">The Devkit Portal</h3>
-                <p class="quadrant-desc">Open-source SDKs, APIs, and public code modules.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- FLAGSHIP ENGINE -->
-    <section class="section-padding container" id="flagships">
-        <div class="section-header">
-            <div class="section-title">Core Production</div>
-            <h2 class="section-headline">The Flagship <span>Engine</span></h2>
-        </div>
-        <div class="project-grid" id="flagship-grid">
-            <!-- JS will populate this based on registry -->
-        </div>
-    </section>
-
-    <!-- INNOVATION LAB -->
-    <section class="section-padding container" id="labs">
-        <div class="section-header">
-            <div class="section-title">Active R&D</div>
-            <h2 class="section-headline">Innovation Lab & <span>Experiments</span></h2>
-        </div>
-        <div class="project-grid" id="lab-grid">
-            <!-- JS will populate this -->
-        </div>
-    </section>
-
-    <!-- 3D & FOUNDRY -->
-    <section class="section-padding immersive-dark" id="foundry">
+<!-- =========================================================== -->
+<!-- ============          HOME PAGE               ============ -->
+<!-- =========================================================== -->
+<div id="homePage" class="home-page d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg home-navbar">
         <div class="container">
-            <div class="section-header">
-                <div class="section-title">Spatial Computing</div>
-                <h2 class="section-headline">3D, VR & Computer Vision <span>Foundry</span></h2>
-            </div>
-            <div class="project-grid">
-                <div class="project-card glass-panel crosshair-corners">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="corner-tl"></div><div class="corner-tr"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">3D Spatial Analytics Globe</h3>
-                        <span class="status-pill status-beta">REAL-TIME</span>
-                    </div>
-                    <p class="card-desc">Interactive canvas showing live global telemetry maps and user deployment clusters.</p>
-                    <div class="card-footer"><span class="card-hash">[HASH: 9f3a]</span></div>
+            <a class="navbar-brand d-flex align-items-center text-white" href="#">
+                <div class="brand-icon me-2">
+                    <svg class="logo-svg"><use href="#fov-logo"></use></svg>
                 </div>
-                <div class="project-card glass-panel crosshair-corners">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="corner-tl"></div><div class="corner-tr"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">VR Telepresence Showroom</h3>
-                        <span class="status-pill status-indev">CONCEPT</span>
-                    </div>
-                    <p class="card-desc">Fully responsive structural concept layouts for future production studios and spatial reviews.</p>
-                    <div class="card-footer"><span class="card-hash">[HASH: b71c]</span></div>
+                <div>
+                    <div class="brand-name">Fountain of Victory</div>
+                    <div class="brand-subtitle">Church Attendance & Membership System</div>
                 </div>
-                <div class="project-card glass-panel crosshair-corners">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1510511459019-5dda7724fd87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="corner-tl"></div><div class="corner-tr"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">Cyber-Security Node Dashboard</h3>
-                        <span class="status-pill status-stable">SECURE</span>
-                    </div>
-                    <p class="card-desc">A visual 3D representation of an active network under defense, mapping packet flow and threats.</p>
-                    <div class="card-footer"><span class="card-hash">[HASH: e4d2]</span></div>
-                </div>
-            </div>
+            </a>
         </div>
-    </section>
+    </nav>
 
-    <!-- OPEN SOURCE & DEVKIT -->
-    <section class="section-padding container" id="opensource">
-        <div class="section-header">
-            <div class="section-title">Ecosystem Commitment</div>
-            <h2 class="section-headline">Open-Source Repositories & <span>Devkit Architecture</span></h2>
-        </div>
-        <div class="split-layout">
-            <div class="code-block">
-                <div class="code-line"><span class="line-num">1</span><span class="syntax-comment">// Fetch Livcast Stream Token</span></div>
-                <div class="code-line"><span class="line-num">2</span><span class="syntax-keyword">import</span> { LivcastClient } <span class="syntax-keyword">from</span> <span class="syntax-string">'@afrisoft/livcast-core'</span>;</div>
-                <div class="code-line"><span class="line-num">3</span></div>
-                <div class="code-line"><span class="line-num">4</span><span class="syntax-keyword">const</span> <span class="syntax-func">initStream</span> = <span class="syntax-keyword">async</span> () => {</div>
-                <div class="code-line"><span class="line-num">5</span>&nbsp;&nbsp;<span class="syntax-keyword">const</span> client = <span class="syntax-keyword">new</span> <span class="syntax-func">LivcastClient</span>({ region: <span class="syntax-string">'af-east-1'</span> });</div>
-                <div class="code-line"><span class="line-num">6</span>&nbsp;&nbsp;<span class="syntax-keyword">const</span> token = <span class="syntax-keyword">await</span> client.<span class="syntax-func">auth</span>(process.env.API_KEY);</div>
-                <div class="code-line"><span class="line-num">7</span>&nbsp;&nbsp;<span class="syntax-func">return</span> client.<span class="syntax-func">startIngest</span>(token, {</div>
-                <div class="code-line"><span class="line-num">8</span>&nbsp;&nbsp;&nbsp;&nbsp;resolution: <span class="syntax-string">'4K'</span>, bitrate: <span class="syntax-string">12000</span></div>
-                <div class="code-line"><span class="line-num">9</span>&nbsp;&nbsp;});</div>
-                <div class="code-line"><span class="line-num">10</span>};</div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="project-card">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">Livcast Core Client SDK</h3>
-                        <span class="status-pill status-stable">v2.4.0</span>
-                    </div>
-                    <p class="card-desc">Flutter/Dart open-source component plugin for high-velocity live streaming deployment.</p>
-                    <div class="card-footer">
-                        <span class="card-hash">[HASH: c8f1]</span>
-                        <button class="terminal-btn">VIEW REPO</button>
-                    </div>
+    <div class="container flex-grow-1 d-flex align-items-center">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 text-center mb-5">
+                <div class="home-logo mb-3">
+                    <svg class="logo-svg"><use href="#fov-logo"></use></svg>
                 </div>
-                <div class="project-card">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">Automation Script Hub</h3>
-                        <span class="status-pill status-beta">SHELL</span>
+                <h1 class="display-4 fw-bold text-white mb-2">Fountain of Victory</h1>
+                <p class="lead text-white-50">Church Attendance &amp; Membership System</p>
+                <p class="text-white-50" id="homeDate"></p>
+            </div>
+            <div class="col-md-6 col-lg-5 mb-4">
+                <div class="home-card admin-card" onclick="navigateTo('admin')">
+                    <div class="home-card-icon">
+                        <i class="bi bi-shield-lock-fill"></i>
                     </div>
-                    <p class="card-desc">Open git modules featuring system tools, macros, and infrastructure automation scripts.</p>
-                    <div class="card-footer">
-                        <span class="card-hash">[HASH: 2d9a]</span>
-                        <button class="terminal-btn">VIEW REPO</button>
+                    <h2 class="fw-bold">Admin</h2>
+                    <p>Manage members, view reports, track attendance statistics, and oversee church data.</p>
+                    <button class="btn btn-gold btn-lg w-100">
+                        Enter Dashboard <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-5 mb-4">
+                <div class="home-card desk-card" onclick="navigateTo('attendance')">
+                    <div class="home-card-icon">
+                        <i class="bi bi-clipboard-check-fill"></i>
                     </div>
+                    <h2 class="fw-bold">Attendance Desk</h2>
+                    <p>Search members, mark attendance for today's service, and register new visitors quickly.</p>
+                    <button class="btn btn-outline-light btn-lg w-100">
+                        Open Desk <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- INDUSTRIAL & CLINICAL MATRIX -->
-    <section class="section-padding immersive-dark" id="industrial">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-title">Physical Infrastructure</div>
-                <h2 class="section-headline">Industrial & Clinical <span>Systems Matrix</span></h2>
-            </div>
-            <div class="project-grid">
-                <div class="project-card">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">Biomedical Pathology Core</h3>
-                        <span class="status-pill status-stable">ACTIVE</span>
-                    </div>
-                    <p class="card-desc">Medical laboratory management software, auto-calibration monitoring, and diagnostic test stream analyzers.</p>
-                    <div class="card-footer"><span class="card-hash">[HASH: f5b3]</span></div>
-                </div>
-                <div class="project-card">
-                    <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">ATM Sentinel System</h3>
-                        <span class="status-pill status-beta">MONITORING</span>
-                    </div>
-                    <p class="card-desc">System-level telemetry trackers, hardware fault alert mechanics, and physical terminal security modules.</p>
-                    <div class="card-footer"><span class="card-hash">[HASH: a18e]</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- REAL-TIME ACTIVITY STREAM -->
-    <section class="section-padding container" id="activity">
-        <video autoplay muted loop playsinline class="activity-video-bg">
-            <source src="https://cdn.pixabay.com/video/2021/09/05/86624-604516106_large.mp4" type="video/mp4">
-        </video>
-        <div style="position: relative; z-index: 2;">
-            <div class="section-header">
-                <div class="section-title">Live Ledger</div>
-                <h2 class="section-headline">Real-Time Activity <span>Stream</span></h2>
-            </div>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">[2026.06.21] // 14:32 UTC</div>
-                    <div class="timeline-text">Livcast SDK build v2.4.0 deployed to open-source repository.</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">[2026.05.14] // 09:15 UTC</div>
-                    <div class="timeline-text">NexGuard IoT hardware integration tests verified over MQTT layer.</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">[2026.04.02] // 18:45 UTC</div>
-                    <div class="timeline-text">Kuphanda contextual analysis engine upgraded with new document parser.</div>
-                </div>
-                <div class="timeline-item" style="opacity: 0.5;">
-                    <div class="timeline-date">[2025.11.30] // 11:00 UTC</div>
-                    <div class="timeline-text">Archived: Early prototype of EV Dashboard Simulator moved to cold storage.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer style="padding: 60px 0; border-top: 1px solid var(--border-glass);">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-tertiary);">
-                AFRISOFT.SPACE // SECURE DEV PORTAL // VERIFIED: 0x8f3...9a2
-            </div>
-            <div style="display: flex; gap: 20px;">
-                <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;" class="hover-link">Afrisoft.com</a>
-                <a href="#" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;" class="hover-link">Contact Nodes</a>
-            </div>
-        </div>
+    <footer class="home-footer text-center py-3">
+        <p class="mb-0 text-white-50">&copy; <span id="homeYear"></span> Fountain of Victory Church. All rights reserved.</p>
     </footer>
+</div>
 
-    <script>
-        /* ==========================================
-           1. GLOBAL PROJECT REGISTRY
-           ========================================== */
-        const projectRegistry = [
-            { id: 'livcast', title: 'LIVCAST', tier: 'flagship', category: 'software', status: 'stable', hash: '7a3f', desc: 'High-performance live-streaming & production ecosystem for desktop and mobile deployment.', tags: ['streaming', 'mobile', 'desktop', 'software'], img: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'nexguard', title: 'NexGuard', tier: 'flagship', category: 'security', status: 'beta', hash: '9b1c', desc: 'Integrated smart home IoT security mesh, hardware controllers, and alert automation networks.', tags: ['iot', 'security', 'hardware', 'mqtt'], img: 'https://images.unsplash.com/photo-1558002038-1055907df827?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'kuphanda', title: 'Kuphanda', tier: 'flagship', category: 'intelligence', status: 'stable', hash: '4d8e', desc: 'Advanced knowledge management, document processing engines, and intelligent contextual analysis assistants.', tags: ['ai', 'llm', 'docs', 'intelligence'], img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'moneyos', title: 'Money OS', tier: 'flagship', category: 'software', status: 'indev', hash: '2f5a', desc: 'Distributed financial ledger frameworks and enterprise transaction operating architectures.', tags: ['fintech', 'ledger', 'software'], img: 'https://images.unsplash.com/photo-1640340434855-6084b1f4901c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'aivideo', title: 'AI Video Super-Res', tier: 'lab', category: 'intelligence', status: 'experimental', hash: '8c2d', desc: 'Real-time video super-resolution enhancer using WebNN and FFmpeg WASM.', tags: ['ai', 'video', 'webnn', 'intelligence'], img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'audiomod', title: 'Audio Voice Modulator', tier: 'lab', category: 'software', status: 'experimental', hash: '1e9f', desc: 'Low-latency audio voice modulator and changer built on Web Audio API.', tags: ['audio', 'webaudio', 'software'], img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'meshopt', title: 'Network Mesh Optimizer', tier: 'lab', category: 'security', status: 'experimental', hash: '6b4a', desc: 'Distributed network mesh optimizer for peer-to-peer WebRTC communications.', tags: ['webrtc', 'network', 'security'], img: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'wallwatch', title: 'Smart Wall-Watch IoT', tier: 'lab', category: 'security', status: 'experimental', hash: '0d7c', desc: 'Smart Wall-Watch IoT interface controller via MQTT and Tuya Core.', tags: ['iot', 'mqtt', 'security'], img: 'https://images.unsplash.com/photo-1558002038-1055907df827?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-            { id: 'evdash', title: 'EV Dashboard Simulator', tier: 'lab', category: 'software', status: 'experimental', hash: '5a2b', desc: 'EV / Autonomous Dashboard System Simulator rendered via Canvas2D.', tags: ['ev', 'canvas', 'software'], img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
+<!-- =========================================================== -->
+<!-- ============         ADMIN SECTION            ============ -->
+<!-- =========================================================== -->
+<div id="adminSection" class="d-none">
+    <nav class="navbar navbar-expand-lg admin-navbar fixed-top">
+        <div class="container-fluid">
+            <button class="btn btn-link text-white d-lg-none" id="sidebarToggle">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+            <a class="navbar-brand d-flex align-items-center text-white" href="#">
+                <div class="brand-icon-sm me-2">
+                    <svg class="logo-svg"><use href="#fov-logo"></use></svg>
+                </div>
+                <span class="fw-bold d-none d-sm-inline">Fountain of Victory</span>
+            </a>
+            <div class="d-flex align-items-center ms-auto">
+                <span class="text-white-50 me-3 d-none d-md-inline" id="currentDateAdmin"></span>
+                <div class="dropdown">
+                    <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> <span class="d-none d-sm-inline">Admin</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" onclick="navigateTo('home')"><i class="bi bi-house"></i> Home</a></li>
+                        <li><a class="dropdown-item" onclick="showAdminPage('settings')"><i class="bi bi-gear"></i> Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="navigateTo('home')"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="adminSidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link active" onclick="showAdminPage('dashboard')" data-page="dashboard">
+                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                </a>
+                <a class="nav-link" onclick="showAdminPage('members')" data-page="members">
+                    <i class="bi bi-people-fill"></i> <span>Members</span>
+                </a>
+                <a class="nav-link" onclick="showAdminPage('register')" data-page="register">
+                    <i class="bi bi-person-plus-fill"></i> <span>Register Member</span>
+                </a>
+                <a class="nav-link" onclick="showAdminPage('attendance')" data-page="attendance">
+                    <i class="bi bi-clipboard-check"></i> <span>Attendance</span>
+                </a>
+                <a class="nav-link" onclick="showAdminPage('reports')" data-page="reports">
+                    <i class="bi bi-bar-chart-fill"></i> <span>Reports</span>
+                </a>
+                <a class="nav-link" onclick="showAdminPage('visitors')" data-page="visitors">
+                    <i class="bi bi-person-hearts"></i> <span>Visitors</span>
+                </a>
+                <a class="nav-link" onclick="showAdminPage('settings')" data-page="settings">
+                    <i class="bi bi-gear-fill"></i> <span>Settings</span>
+                </a>
+                <hr class="sidebar-divider">
+                <a class="nav-link text-warning" onclick="navigateTo('home')">
+                    <i class="bi bi-house-door"></i> <span>Back to Home</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <!-- DASHBOARD -->
+            <div id="page-dashboard" class="admin-page">
+                <div class="page-header mb-4">
+                    <h1 class="h3 fw-bold mb-1"><i class="bi bi-speedometer2 text-gold"></i> Dashboard</h1>
+                    <p class="text-muted mb-0">Welcome back! Here's what's happening at Fountain of Victory today.</p>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg mb-3" onclick="showAdminPage('members')" style="cursor:pointer;">
+                        <div class="stat-card stat-blue">
+                            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                            <div class="stat-value" id="statTotal">0</div>
+                            <div class="stat-label">Total Members</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg mb-3" onclick="showAdminPage('members')" style="cursor:pointer;">
+                        <div class="stat-card stat-green">
+                            <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+                            <div class="stat-value" id="statActive">0</div>
+                            <div class="stat-label">Active Members</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg mb-3" onclick="showAdminPage('members')" style="cursor:pointer;">
+                        <div class="stat-card stat-gray">
+                            <div class="stat-icon"><i class="bi bi-dash-circle-fill"></i></div>
+                            <div class="stat-value" id="statInactive">0</div>
+                            <div class="stat-label">Inactive</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg mb-3" onclick="showAdminPage('visitors')" style="cursor:pointer;">
+                        <div class="stat-card stat-orange">
+                            <div class="stat-icon"><i class="bi bi-person-hearts"></i></div>
+                            <div class="stat-value" id="statVisitors">0</div>
+                            <div class="stat-label">Visitors</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg mb-3">
+                        <div class="stat-card stat-purple">
+                            <div class="stat-icon"><i class="bi bi-calendar-check-fill"></i></div>
+                            <div class="stat-value" id="statToday">0</div>
+                            <div class="stat-label">Present Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-lg-8">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="bi bi-graph-up text-gold"></i> Attendance Trend</h5>
+                                <span class="badge bg-light text-dark">Last 4 Sundays</span>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="attendanceChart" height="120"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-pie-chart text-gold"></i> Member Status</h5>
+                            </div>
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <canvas id="statusChart" height="180"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="bi bi-clock-history text-gold"></i> Recent Activity</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="recent-list" id="recentActivity"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card dashboard-card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="bi bi-person-plus text-gold"></i> Recent Registrations</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="recent-list" id="recentRegistrations"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card mt-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-lightning-fill text-gold"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body d-flex flex-wrap gap-2">
+                        <button class="btn btn-blue" onclick="showAdminPage('register')">
+                            <i class="bi bi-person-plus"></i> Register Member
+                        </button>
+                        <button class="btn btn-gold" onclick="navigateTo('attendance')">
+                            <i class="bi bi-clipboard-check"></i> Mark Attendance
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="showAdminPage('visitors')">
+                            <i class="bi bi-person-hearts"></i> New Visitor
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="showAdminPage('reports')">
+                            <i class="bi bi-file-earmark-bar-graph"></i> View Reports
+                        </button>
+                        <button class="btn btn-outline-success" onclick="showAlert('Export feature will be available in the full version.', 'info')">
+                            <i class="bi bi-download"></i> Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEMBERS PAGE -->
+            <div id="page-members" class="admin-page d-none">
+                <div class="page-header mb-4 d-flex justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="h3 fw-bold mb-1"><i class="bi bi-people-fill text-gold"></i> Members</h1>
+                        <p class="text-muted mb-0">Manage all church members</p>
+                    </div>
+                    <button class="btn btn-blue" onclick="showAdminPage('register')">
+                        <i class="bi bi-person-plus"></i> Add Member
+                    </button>
+                </div>
+
+                <div class="card dashboard-card mb-3">
+                    <div class="card-body">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="memberSearchInput" placeholder="Search by name, phone, or member code...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="btn-group w-100" role="group">
+                                    <button class="btn btn-outline-secondary active" data-filter="All" onclick="setMemberFilter('All')">All</button>
+                                    <button class="btn btn-outline-success" data-filter="Active" onclick="setMemberFilter('Active')">Active</button>
+                                    <button class="btn btn-outline-secondary" data-filter="Inactive" onclick="setMemberFilter('Inactive')">Inactive</button>
+                                    <button class="btn btn-outline-warning" data-filter="Visitor" onclick="setMemberFilter('Visitor')">Visitors</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th class="d-none d-md-table-cell">Phone</th>
+                                    <th class="d-none d-lg-table-cell">Area</th>
+                                    <th class="d-none d-lg-table-cell">Joined</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="membersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REGISTER MEMBER PAGE -->
+            <div id="page-register" class="admin-page d-none">
+                <div class="page-header mb-4">
+                    <h1 class="h3 fw-bold mb-1"><i class="bi bi-person-plus-fill text-gold"></i> Register New Member</h1>
+                    <p class="text-muted mb-0">Add a new member to the church database</p>
+                </div>
+
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <form id="memberForm" onsubmit="handleMemberRegistration(event)">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">First Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="first_name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="last_name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Gender <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="gender" required>
+                                        <option value="">Select gender</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" name="date_of_birth">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control" name="phone" placeholder="+265..." required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" placeholder="example@email.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Address / Area</label>
+                                    <input type="text" class="form-control" name="address" placeholder="e.g., Ndirande">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" name="status">
+                                        <option>Active</option>
+                                        <option>Inactive</option>
+                                        <option>Visitor</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Department</label>
+                                    <select class="form-select" name="department">
+                                        <option value="">None</option>
+                                        <option>Youth</option>
+                                        <option>Choir</option>
+                                        <option>Women's Ministry</option>
+                                        <option>Men's Ministry</option>
+                                        <option>Children's Ministry</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-4 d-flex gap-2">
+                                <button type="submit" class="btn btn-blue">
+                                    <i class="bi bi-check-circle"></i> Register Member
+                                </button>
+                                <button type="reset" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-clockwise"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ATTENDANCE PAGE -->
+            <div id="page-attendance" class="admin-page d-none">
+                <div class="page-header mb-4">
+                    <h1 class="h3 fw-bold mb-1"><i class="bi bi-clipboard-check text-gold"></i> Attendance Records</h1>
+                    <p class="text-muted mb-0">View and manage attendance records</p>
+                </div>
+
+                <div class="card dashboard-card mb-3">
+                    <div class="card-body">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">Service Date</label>
+                                <input type="date" class="form-control" id="attendanceDateFilter">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Service Type</label>
+                                <select class="form-select" id="attendanceServiceFilter">
+                                    <option value="All">All Services</option>
+                                    <option>Sunday Service</option>
+                                    <option>Midweek Service</option>
+                                    <option>Prayer Meeting</option>
+                                    <option>Bible Study</option>
+                                    <option>Youth Service</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-blue w-100" onclick="renderAttendanceTable()">
+                                    <i class="bi bi-funnel"></i> Apply Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-6 col-md-4">
+                        <div class="stat-card stat-blue">
+                            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                            <div class="stat-value" id="attendanceTotalCount">0</div>
+                            <div class="stat-label">Total Present</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="stat-card stat-green">
+                            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+                            <div class="stat-value" id="attendanceUniqueCount">0</div>
+                            <div class="stat-label">Unique Members</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="stat-card stat-orange">
+                            <div class="stat-icon"><i class="bi bi-person-hearts"></i></div>
+                            <div class="stat-value" id="attendanceVisitorCount">0</div>
+                            <div class="stat-label">Visitors Present</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-list-check text-gold"></i> Attendance Table</h5>
+                        <button class="btn btn-sm btn-outline-success" onclick="showAlert('Export feature will be available in the full version.', 'info')">
+                            <i class="bi bi-download"></i> Export
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Member Code</th>
+                                    <th>Name</th>
+                                    <th>Service Date</th>
+                                    <th>Service Type</th>
+                                    <th>Time</th>
+                                    <th>Marked By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORTS PAGE -->
+            <div id="page-reports" class="admin-page d-none">
+                <div class="page-header mb-4">
+                    <h1 class="h3 fw-bold mb-1"><i class="bi bi-bar-chart-fill text-gold"></i> Reports &amp; Analytics</h1>
+                    <p class="text-muted mb-0">View attendance trends and church growth statistics</p>
+                </div>
+
+                <div class="card dashboard-card mb-3">
+                    <div class="card-body">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">From Date</label>
+                                <input type="date" class="form-control" id="reportFromDate">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">To Date</label>
+                                <input type="date" class="form-control" id="reportToDate">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Service Type</label>
+                                <select class="form-select" id="reportServiceFilter">
+                                    <option value="All">All Services</option>
+                                    <option>Sunday Service</option>
+                                    <option>Midweek Service</option>
+                                    <option>Prayer Meeting</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex gap-2">
+                            <button class="btn btn-blue" onclick="renderReports()">
+                                <i class="bi bi-funnel"></i> Generate Report
+                            </button>
+                            <button class="btn btn-outline-success" onclick="showAlert('Export feature will be available in the full version.', 'info')">
+                                <i class="bi bi-download"></i> Export Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card stat-blue">
+                            <div class="stat-icon"><i class="bi bi-people"></i></div>
+                            <div class="stat-value" id="reportTotalAttendance">0</div>
+                            <div class="stat-label">Total Attendance</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card stat-green">
+                            <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+                            <div class="stat-value" id="reportServiceCount">0</div>
+                            <div class="stat-label">Services Held</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card stat-orange">
+                            <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+                            <div class="stat-value" id="reportAvgAttendance">0</div>
+                            <div class="stat-label">Avg Attendance</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card stat-purple">
+                            <div class="stat-icon"><i class="bi bi-star"></i></div>
+                            <div class="stat-value" id="reportMaxAttendance">0</div>
+                            <div class="stat-label">Highest Attendance</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-bar-chart text-gold"></i> Attendance by Service</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="reportChart" height="100"></canvas>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-trophy text-gold"></i> Most Consistent Members</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Member Code</th>
+                                    <th>Name</th>
+                                    <th>Services Attended</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topMembersBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISITORS PAGE -->
+            <div id="page-visitors" class="admin-page d-none">
+                <div class="page-header mb-4 d-flex justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h1 class="h3 fw-bold mb-1"><i class="bi bi-person-hearts text-gold"></i> Visitors</h1>
+                        <p class="text-muted mb-0">Manage church visitors and follow-ups</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-7">
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-people text-gold"></i> Visitor List</h5>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0 align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th class="d-none d-md-table-cell">Phone</th>
+                                            <th class="d-none d-md-table-cell">Area</th>
+                                            <th>Joined</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="visitorsTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="card dashboard-card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-person-plus text-gold"></i> Quick Visitor Registration</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="visitorFormAdmin" onsubmit="handleVisitorRegistrationAdmin(event)">
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <label class="form-label">First Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="first_name" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="last_name" required>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Gender</label>
+                                            <select class="form-select" name="gender">
+                                                <option>Male</option>
+                                                <option>Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Phone</label>
+                                            <input type="tel" class="form-control" name="phone" placeholder="+265...">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Area / Address</label>
+                                            <input type="text" class="form-control" name="address">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-gold w-100 mt-3">
+                                        <i class="bi bi-person-plus"></i> Register Visitor
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS PAGE -->
+            <div id="page-settings" class="admin-page d-none">
+                <div class="page-header mb-4">
+                    <h1 class="h3 fw-bold mb-1"><i class="bi bi-gear-fill text-gold"></i> Settings</h1>
+                    <p class="text-muted mb-0">Manage church settings and upcoming features</p>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="card dashboard-card coming-soon-card h-100">
+                            <div class="card-body text-center">
+                                <div class="coming-soon-icon">
+                                    <i class="bi bi-qr-code-scan"></i>
+                                </div>
+                                <h5>QR Code Check-in</h5>
+                                <p class="text-muted">Allow members to check in by scanning a QR code at the entrance.</p>
+                                <span class="badge bg-warning text-dark">Coming Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card dashboard-card coming-soon-card h-100">
+                            <div class="card-body text-center">
+                                <div class="coming-soon-icon">
+                                    <i class="bi bi-chat-dots"></i>
+                                </div>
+                                <h5>SMS Notifications</h5>
+                                <p class="text-muted">Send automated SMS to members for birthdays, events, and follow-ups.</p>
+                                <span class="badge bg-warning text-dark">Coming Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-diagram-3 text-gold"></i> Department Groups</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3" id="departmentGrid"></div>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-building text-gold"></i> Church Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <form onsubmit="event.preventDefault(); showAlert('Settings saved successfully!', 'success');">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Church Name</label>
+                                    <input type="text" class="form-control" value="Fountain of Victory" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Contact Phone</label>
+                                    <input type="tel" class="form-control" value="+265 1 234 567">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="info@fov.org">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Address</label>
+                                    <input type="text" class="form-control" value="Blantyre, Malawi">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-blue mt-3">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- =========================================================== -->
+<!-- ============      ATTENDANCE DESK SECTION      ============ -->
+<!-- =========================================================== -->
+<div id="attendanceSection" class="d-none">
+    <nav class="navbar navbar-expand-lg admin-navbar fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center text-white" href="#">
+                <div class="brand-icon-sm me-2">
+                    <svg class="logo-svg"><use href="#fov-logo"></use></svg>
+                </div>
+                <span class="fw-bold d-none d-sm-inline">Attendance Desk</span>
+            </a>
+            <div class="d-flex align-items-center ms-auto">
+                <span class="text-white-50 me-3 d-none d-md-inline" id="currentDateDesk"></span>
+                <select class="form-select form-select-sm me-2" id="deskServiceType" style="width:auto;">
+                    <option>Sunday Service</option>
+                    <option>Midweek Service</option>
+                    <option>Prayer Meeting</option>
+                    <option>Bible Study</option>
+                    <option>Youth Service</option>
+                </select>
+                <button class="btn btn-outline-light btn-sm" onclick="navigateTo('home')">
+                    <i class="bi bi-house"></i> <span class="d-none d-sm-inline">Home</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="desk-main">
+        <div class="row g-3">
+            <div class="col-lg-8">
+                <div class="desk-counter-bar mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                        <div>
+                            <h4 class="mb-0 text-white"><i class="bi bi-people-fill"></i> Marked Present Today</h4>
+                            <p class="mb-0 text-white-50" id="deskServiceLabel">Sunday Service</p>
+                        </div>
+                        <div class="desk-counter" id="deskTodayCount">0</div>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card mb-3">
+                    <div class="card-body">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" id="deskSearchInput" placeholder="Search by name, phone, or member code..." autofocus>
+                            <button class="btn btn-outline-secondary" onclick="document.getElementById('deskSearchInput').value=''; searchDeskMembers();">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        </div>
+                        <p class="text-muted small mt-2 mb-0"><i class="bi bi-info-circle"></i> Click a member to mark them present for today's service.</p>
+                    </div>
+                </div>
+
+                <div id="deskResults" class="row g-3"></div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-person-plus-fill text-gold"></i> Quick Visitor Registration</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="visitorFormDesk" onsubmit="handleVisitorRegistrationDesk(event)">
+                            <p class="text-muted small">Register a new visitor and mark them present automatically.</p>
+                            <div class="mb-2">
+                                <label class="form-label">First Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="first_name" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="last_name" required>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" name="gender">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control" name="phone" placeholder="+265...">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Area / Address</label>
+                                <input type="text" class="form-control" name="address">
+                            </div>
+                            <button type="submit" class="btn btn-gold w-100">
+                                <i class="bi bi-person-plus"></i> Register &amp; Mark Present
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card dashboard-card mt-3">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-list-check text-gold"></i> Today's Attendance</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="today-list" id="deskTodayList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MEMBER DETAIL MODAL -->
+<div class="modal fade" id="memberDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-blue text-white">
+                <h5 class="modal-title"><i class="bi bi-person-circle"></i> Member Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="memberDetailBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="markPresentBtn" onclick="markPresent()">
+                    <i class="bi bi-check-circle-fill"></i> Mark Present
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Member Modal -->
+<div class="modal fade" id="editMemberModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-blue text-white">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Member</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="editMemberBody"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* =============================================================
+       FOUNTAIN OF VICTORY - CHURCH MANAGEMENT SYSTEM
+       Prototype with mock data (Supabase-ready architecture)
+       ============================================================= */
+
+    const CONFIG = {
+        appName: 'Fountain of Victory',
+        services: ['Sunday Service', 'Midweek Service', 'Prayer Meeting', 'Bible Study', 'Youth Service'],
+        departments: [
+            { name: 'Youth', icon: 'bi-lightning-charge-fill', color: 'warning' },
+            { name: 'Choir', icon: 'bi-music-note-beamed', color: 'info' },
+            { name: "Women's Ministry", icon: 'bi-flower1', color: 'danger' },
+            { name: "Men's Ministry", icon: 'bi-person-badge-fill', color: 'primary' },
+            { name: "Children's Ministry", icon: 'bi-balloon-fill', color: 'success' }
+        ]
+    };
+
+    let state = {
+        members: [],
+        attendance: [],
+        currentSection: 'home',
+        currentAdminPage: 'dashboard',
+        selectedMemberId: null,
+        memberFilter: 'All',
+        attendanceChart: null,
+        statusChart: null,
+        reportChart: null
+    };
+
+    const db = {
+        members: {
+            getAll: () => state.members,
+            getById: (id) => state.members.find(m => m.id === parseInt(id)),
+            add: (member) => {
+                member.id = state.members.length > 0 ? Math.max(...state.members.map(m => m.id)) + 1 : 1;
+                member.member_code = generateMemberCode();
+                member.created_at = new Date().toISOString();
+                member.joined_date = getTodayString();
+                state.members.push(member);
+                return member;
+            },
+            update: (id, updates) => {
+                const m = db.members.getById(id);
+                if (m) Object.assign(m, updates);
+                return m;
+            },
+            delete: (id) => {
+                state.members = state.members.filter(m => m.id !== parseInt(id));
+            },
+            search: (query) => {
+                if (!query || query.trim() === '') return state.members;
+                const q = query.toLowerCase().trim();
+                return state.members.filter(m =>
+                    `${m.first_name} ${m.last_name}`.toLowerCase().includes(q) ||
+                    m.phone.toLowerCase().includes(q) ||
+                    m.member_code.toLowerCase().includes(q) ||
+                    (m.email && m.email.toLowerCase().includes(q))
+                );
+            }
+        },
+        attendance: {
+            getAll: () => state.attendance,
+            getByDate: (date) => state.attendance.filter(a => a.service_date === date),
+            getByMember: (memberId) => state.attendance.filter(a => a.member_id === parseInt(memberId)),
+            add: (record) => {
+                record.id = state.attendance.length > 0 ? Math.max(...state.attendance.map(a => a.id)) + 1 : 1;
+                record.created_at = new Date().toISOString();
+                state.attendance.push(record);
+                return record;
+            },
+            isMarkedToday: (memberId, serviceType) => {
+                const today = getTodayString();
+                return state.attendance.some(a =>
+                    a.member_id === parseInt(memberId) &&
+                    a.service_date === today &&
+                    a.service_type === serviceType
+                );
+            },
+            getTodayCount: () => {
+                const today = getTodayString();
+                return state.attendance.filter(a => a.service_date === today).length;
+            }
+        }
+    };
+
+    function getTodayString() { return new Date().toISOString().split('T')[0]; }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function getLastFourSundays() {
+        const sundays = [];
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const lastSunday = new Date(today);
+        lastSunday.setDate(today.getDate() - dayOfWeek);
+        for (let i = 3; i >= 0; i--) {
+            const s = new Date(lastSunday);
+            s.setDate(lastSunday.getDate() - (i * 7));
+            sundays.push(s.toISOString().split('T')[0]);
+        }
+        return sundays;
+    }
+
+    function generateMemberCode() {
+        const maxNum = state.members.reduce((max, m) => {
+            const num = parseInt(m.member_code.split('-')[1]);
+            return num > max ? num : max;
+        }, 0);
+        return `FOV-${String(maxNum + 1).padStart(4, '0')}`;
+    }
+
+    function getInitials(firstName, lastName) {
+        return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
+    }
+
+    function getAvatarClass(status) {
+        switch (status) {
+            case 'Active': return 'avatar-blue';
+            case 'Inactive': return 'avatar-gray';
+            case 'Visitor': return 'avatar-orange';
+            default: return 'avatar-blue';
+        }
+    }
+
+    function getStatusBadge(status) {
+        const cls = status === 'Active' ? 'status-active' : status === 'Inactive' ? 'status-inactive' : 'status-visitor';
+        return `<span class="status-badge ${cls}">${status}</span>`;
+    }
+
+    function showAlert(message, type = 'success') {
+        const container = document.getElementById('alertContainer');
+        const icon = type === 'success' ? 'bi-check-circle-fill' : type === 'danger' ? 'bi-exclamation-circle-fill' : type === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill';
+        const alertId = 'alert-' + Date.now();
+        const html = `
+            <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show shadow" role="alert" style="min-width:280px;">
+                <i class="bi ${icon} me-2"></i> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+        container.insertAdjacentHTML('beforeend', html);
+        setTimeout(() => {
+            const el = document.getElementById(alertId);
+            if (el) { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }
+        }, 3500);
+    }
+
+    function initializeMockData() {
+        state.members = [
+            { id: 1,  member_code: 'FOV-0001', first_name: 'John',      last_name: 'Banda',     gender: 'Male',   phone: '+265991234567', email: 'john.banda@example.com',      address: 'Ndirande',   joined_date: '2023-01-15', status: 'Active',   department: 'Youth',              created_at: '2023-01-15T08:00:00Z' },
+            { id: 2,  member_code: 'FOV-0002', first_name: 'Grace',     last_name: 'Phiri',     gender: 'Female', phone: '+265992345678', email: 'grace.phiri@example.com',    address: 'Blantyre',   joined_date: '2023-02-20', status: 'Active',   department: 'Choir',             created_at: '2023-02-20T08:00:00Z' },
+            { id: 3,  member_code: 'FOV-0003', first_name: 'Peter',     last_name: 'Mwale',     gender: 'Male',   phone: '+265993456789', email: 'peter.mwale@example.com',    address: 'Limbe',      joined_date: '2022-09-10', status: 'Inactive', department: "Men's Ministry",     created_at: '2022-09-10T08:00:00Z' },
+            { id: 4,  member_code: 'FOV-0004', first_name: 'Esther',    last_name: 'Chirwa',    gender: 'Female', phone: '+265994567890', email: 'esther.chirwa@example.com',  address: 'Chilomoni',  joined_date: '2023-03-05', status: 'Active',   department: "Women's Ministry",   created_at: '2023-03-05T08:00:00Z' },
+            { id: 5,  member_code: 'FOV-0005', first_name: 'James',     last_name: 'Nyirenda',  gender: 'Male',   phone: '+265995678901', email: 'james.nyirenda@example.com', address: 'Bangwe',     joined_date: '2024-06-12', status: 'Visitor',  department: '',                   created_at: '2024-06-12T08:00:00Z' },
+            { id: 6,  member_code: 'FOV-0006', first_name: 'Mary',      last_name: 'Kumwenda',  gender: 'Female', phone: '+265996789012', email: 'mary.kumwenda@example.com',  address: 'Ndirande',   joined_date: '2022-11-01', status: 'Active',   department: "Children's Ministry",created_at: '2022-11-01T08:00:00Z' },
+            { id: 7,  member_code: 'FOV-0007', first_name: 'David',     last_name: 'Tembo',     gender: 'Male',   phone: '+265997890123', email: 'david.tembo@example.com',    address: 'Soche',      joined_date: '2022-05-20', status: 'Inactive', department: 'Youth',              created_at: '2022-05-20T08:00:00Z' },
+            { id: 8,  member_code: 'FOV-0008', first_name: 'Ruth',      last_name: 'Banda',     gender: 'Female', phone: '+265998901234', email: 'ruth.banda@example.com',     address: 'Blantyre',   joined_date: '2023-05-15', status: 'Active',   department: 'Choir',             created_at: '2023-05-15T08:00:00Z' },
+            { id: 9,  member_code: 'FOV-0009', first_name: 'Samuel',    last_name: 'Phiri',     gender: 'Male',   phone: '+265999012345', email: 'samuel.phiri@example.com',   address: 'Limbe',      joined_date: '2022-07-22', status: 'Active',   department: "Men's Ministry",     created_at: '2022-07-22T08:00:00Z' },
+            { id: 10, member_code: 'FOV-0010', first_name: 'Elizabeth', last_name: 'Mvula',     gender: 'Female', phone: '+265990123456', email: 'elizabeth.mvula@example.com',address: 'Chilomoni',  joined_date: '2024-07-01', status: 'Visitor',  department: '',                   created_at: '2024-07-01T08:00:00Z' },
+            { id: 11, member_code: 'FOV-0011', first_name: 'Daniel',    last_name: 'Chirwa',    gender: 'Male',   phone: '+265991234500', email: 'daniel.chirwa@example.com',  address: 'Bangwe',     joined_date: '2023-04-10', status: 'Active',   department: 'Youth',              created_at: '2023-04-10T08:00:00Z' },
+            { id: 12, member_code: 'FOV-0012', first_name: 'Sarah',     last_name: 'Nyasulu',   gender: 'Female', phone: '+265992345600', email: 'sarah.nyasulu@example.com',  address: 'Soche',      joined_date: '2023-06-18', status: 'Active',   department: "Women's Ministry",   created_at: '2023-06-18T08:00:00Z' },
+            { id: 13, member_code: 'FOV-0013', first_name: 'Joseph',    last_name: 'Mhone',     gender: 'Male',   phone: '+265993456700', email: 'joseph.mhone@example.com',   address: 'Ndirande',   joined_date: '2022-03-14', status: 'Inactive', department: "Men's Ministry",     created_at: '2022-03-14T08:00:00Z' },
+            { id: 14, member_code: 'FOV-0014', first_name: 'Rebecca',   last_name: 'Banda',     gender: 'Female', phone: '+265994567800', email: 'rebecca.banda@example.com',  address: 'Blantyre',   joined_date: '2023-08-05', status: 'Active',   department: 'Choir',             created_at: '2023-08-05T08:00:00Z' },
+            { id: 15, member_code: 'FOV-0015', first_name: 'Isaac',     last_name: 'Tembo',     gender: 'Male',   phone: '+265995678900', email: 'isaac.tembo@example.com',    address: 'Limbe',      joined_date: '2024-08-20', status: 'Visitor',  department: '',                   created_at: '2024-08-20T08:00:00Z' }
         ];
 
-        /* ==========================================
-           2. UI RENDERING ENGINE
-           ========================================== */
-        function renderProjects() {
-            const flagshipGrid = document.getElementById('flagship-grid');
-            const labGrid = document.getElementById('lab-grid');
-            
-            projectRegistry.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'project-card';
-                card.id = `proj-${p.id}`;
-                card.setAttribute('data-tags', p.tags.join(' '));
-                card.setAttribute('data-title', p.title.toLowerCase());
-                
-                const statusClass = p.status === 'stable' ? 'status-stable' : p.status === 'beta' ? 'status-beta' : 'status-indev';
-                
-                card.innerHTML = `
-                    <div class="card-bg" style="background-image: url('${p.img}');"></div>
-                    <div class="card-header">
-                        <h3 class="card-title">${p.title}</h3>
-                        <span class="status-pill ${statusClass}">${p.status.toUpperCase()}</span>
-                    </div>
-                    <p class="card-desc">${p.desc}</p>
-                    <div class="card-footer">
-                        <span class="card-hash">[HASH: ${p.hash}]</span>
-                        ${p.tier === 'flagship' ? `<button class="terminal-btn" onclick="openTerminal('${p.id}')">>_ TERMINAL</button>` : ''}
-                    </div>
-                `;
-                
-                if (p.tier === 'flagship') flagshipGrid.appendChild(card);
-                else labGrid.appendChild(card);
-            });
-        }
+        const sundays = getLastFourSundays();
+        const sundayAttendees = [
+            [1,2,4,6,8,9,11,12,14,3], [1,2,4,6,8,9,11,12,14,5,10,15],
+            [1,2,4,6,8,9,11,12,14,7], [1,2,4,6,8,9,11,12,14,5,10,13,15]
+        ];
 
-        /* ==========================================
-           3. OMNI-SEARCH & FILTERING
-           ========================================== */
-        const searchInput = document.getElementById('omni-search');
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.project-card').forEach(card => {
-                const tags = card.getAttribute('data-tags');
-                const title = card.getAttribute('data-title');
-                if (query === '' || tags.includes(query) || title.includes(query)) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
+        let attId = 1;
+        state.attendance = [];
+
+        sundays.forEach((sunday, idx) => {
+            sundayAttendees[idx].forEach((memberId, i) => {
+                const member = db.members.getById(memberId);
+                if (member) {
+                    const hour = 8 + Math.floor(i / 4);
+                    const minute = (10 + i * 3) % 60;
+                    state.attendance.push({
+                        id: attId++, member_id: memberId, member_name: `${member.first_name} ${member.last_name}`,
+                        member_code: member.member_code, service_date: sunday, service_type: 'Sunday Service',
+                        marked_at: `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:00`, marked_by: 'Attendance Desk',
+                        created_at: `${sunday}T${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:00Z`
+                    });
                 }
             });
         });
+    }
 
-        // Global "/" focus
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
-                e.preventDefault();
-                searchInput.focus();
-            }
-            if (e.metaKey && e.key === 'e') { e.preventDefault(); toggleCopilot(true); }
-            if (e.metaKey && e.key === 'p') { e.preventDefault(); toggleDiagnostics(); }
+    function navigateTo(section) {
+        state.currentSection = section;
+        document.getElementById('homePage').classList.add('d-none');
+        document.getElementById('adminSection').classList.add('d-none');
+        document.getElementById('attendanceSection').classList.add('d-none');
+
+        if (section === 'home') {
+            document.getElementById('homePage').classList.remove('d-none');
+        } else if (section === 'admin') {
+            document.getElementById('adminSection').classList.remove('d-none');
+            showAdminPage('dashboard');
+        } else if (section === 'attendance') {
+            document.getElementById('attendanceSection').classList.remove('d-none');
+            renderDeskPage();
+        }
+        window.scrollTo(0, 0);
+    }
+
+    function showAdminPage(page) {
+        state.currentAdminPage = page;
+        document.querySelectorAll('.admin-page').forEach(el => el.classList.add('d-none'));
+        const pageEl = document.getElementById('page-' + page);
+        if (pageEl) pageEl.classList.remove('d-none');
+
+        document.querySelectorAll('.admin-sidebar .nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.page === page) link.classList.add('active');
         });
 
-        /* ==========================================
-           4. TERMINAL EMULATOR
-           ========================================== */
-        const terminalWindow = document.getElementById('terminal-window');
-        const terminalBody = document.getElementById('terminal-body');
-        const terminalInput = document.getElementById('terminal-input');
-        let activeProjectId = null;
+        closeSidebar();
 
-        function openTerminal(projectId) {
-            activeProjectId = projectId;
-            const project = projectRegistry.find(p => p.id === projectId);
-            terminalWindow.classList.add('active');
-            terminalBody.innerHTML = `<div>Connected to ${project.title} subsystem.</div><div>Type 'status' or 'help'.</div>`;
-            terminalInput.value = '';
-            terminalInput.focus();
+        switch (page) {
+            case 'dashboard': renderDashboard(); break;
+            case 'members': renderMembersTable(); break;
+            case 'attendance': renderAttendancePage(); break;
+            case 'reports': renderReports(); break;
+            case 'visitors': renderVisitorsPage(); break;
+            case 'settings': renderSettings(); break;
         }
+        window.scrollTo(0, 0);
+    }
 
-        function closeTerminal() { terminalWindow.classList.remove('active'); }
+    function toggleSidebar() {
+        document.getElementById('adminSidebar').classList.toggle('show');
+        document.getElementById('sidebarOverlay').classList.toggle('show');
+    }
+    function closeSidebar() {
+        document.getElementById('adminSidebar').classList.remove('show');
+        document.getElementById('sidebarOverlay').classList.remove('show');
+    }
 
-        terminalInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const cmd = terminalInput.value.trim().toLowerCase();
-                const project = projectRegistry.find(p => p.id === activeProjectId);
-                
-                terminalBody.innerHTML += `<div style="color: #fff"><span style="color:var(--accent-cyan)">➜ ~</span> ${cmd}</div>`;
-                
-                if (cmd === 'help') {
-                    terminalBody.innerHTML += `<div>Commands: 'status', 'ping', 'clear'</div>`;
-                } else if (cmd === 'status') {
-                    terminalBody.innerHTML += `<div>{ "status": "${project.status}", "uptime": "99.9%", "hash": "${project.hash}" }</div>`;
-                } else if (cmd === 'ping') {
-                    terminalBody.innerHTML += `<div>Ping reply: 14ms. Connection secure.</div>`;
-                } else if (cmd === 'clear') {
-                    terminalBody.innerHTML = '';
-                } else {
-                    terminalBody.innerHTML += `<div style="color: #ff4d4d">Command not found: ${cmd}</div>`;
-                }
-                
-                terminalInput.value = '';
-                terminalBody.scrollTop = terminalBody.scrollHeight;
-            }
+    function renderDashboard() {
+        const members = db.members.getAll();
+        const todayAttendance = db.attendance.getByDate(getTodayString());
+
+        document.getElementById('statTotal').textContent = members.length;
+        document.getElementById('statActive').textContent = members.filter(m => m.status === 'Active').length;
+        document.getElementById('statInactive').textContent = members.filter(m => m.status === 'Inactive').length;
+        document.getElementById('statVisitors').textContent = members.filter(m => m.status === 'Visitor').length;
+        document.getElementById('statToday').textContent = todayAttendance.length;
+
+        initAttendanceChart();
+        initStatusChart();
+
+        const recentAtt = [...state.attendance].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6);
+        document.getElementById('recentActivity').innerHTML = recentAtt.map(a => `
+            <div class="recent-item">
+                <div class="recent-item-icon" style="background:rgba(22,163,74,0.1);color:#16a34a;"><i class="bi bi-check2"></i></div>
+                <div class="recent-item-text"><p class="name">${a.member_name}</p><p class="detail">Marked present — ${a.service_type}</p></div>
+                <div class="recent-item-time">${formatDate(a.service_date)}</div>
+            </div>`).join('') || '<p class="text-muted text-center p-3 mb-0">No recent activity</p>';
+
+        const recentMembers = [...members].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6);
+        document.getElementById('recentRegistrations').innerHTML = recentMembers.map(m => `
+            <div class="recent-item">
+                <div class="avatar ${getAvatarClass(m.status)}" style="width:36px;height:36px;font-size:0.8rem;">${getInitials(m.first_name, m.last_name)}</div>
+                <div class="recent-item-text"><p class="name">${m.first_name} ${m.last_name}</p><p class="detail">${m.member_code} · ${m.status}</p></div>
+                <div class="recent-item-time">${formatDate(m.joined_date)}</div>
+            </div>`).join('');
+    }
+
+    function initAttendanceChart() {
+        const sundays = getLastFourSundays();
+        const labels = sundays.map(d => new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }));
+        const data = sundays.map(sunday => state.attendance.filter(a => a.service_date === sunday).length);
+
+        const ctx = document.getElementById('attendanceChart');
+        if (state.attendanceChart) state.attendanceChart.destroy();
+        state.attendanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Attendance', data, backgroundColor: '#1E3A8A', borderColor: '#F59E0B', borderWidth: 2, borderRadius: 8, maxBarThickness: 60 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 2, precision: 0 } }, x: { grid: { display: false } } } }
+        });
+    }
+
+    function initStatusChart() {
+        const members = db.members.getAll();
+        const ctx = document.getElementById('statusChart');
+        if (state.statusChart) state.statusChart.destroy();
+        state.statusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels: ['Active', 'Inactive', 'Visitors'], datasets: [{ data: [members.filter(m => m.status === 'Active').length, members.filter(m => m.status === 'Inactive').length, members.filter(m => m.status === 'Visitor').length], backgroundColor: ['#16a34a', '#6b7280', '#F59E0B'], borderWidth: 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } } } }
+        });
+    }
+
+    function renderMembersTable() {
+        const searchQuery = document.getElementById('memberSearchInput')?.value || '';
+        let members = db.members.search(searchQuery);
+        if (state.memberFilter !== 'All') members = members.filter(m => m.status === state.memberFilter);
+
+        const tbody = document.getElementById('membersTableBody');
+        if (members.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No members found</td></tr>`; return; }
+
+        tbody.innerHTML = members.map(m => `
+            <tr>
+                <td><strong>${m.member_code}</strong></td>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="avatar ${getAvatarClass(m.status)}" style="width:32px;height:32px;font-size:0.75rem;">${getInitials(m.first_name, m.last_name)}</div>
+                        ${m.first_name} ${m.last_name}
+                    </div>
+                </td>
+                <td class="d-none d-md-table-cell">${m.phone}</td>
+                <td class="d-none d-lg-table-cell">${m.address || '—'}</td>
+                <td class="d-none d-lg-table-cell">${formatDate(m.joined_date)}</td>
+                <td>${getStatusBadge(m.status)}</td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="openEditModal(${m.id})" title="Edit"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMember(${m.id})" title="Delete"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>`).join('');
+    }
+
+    function setMemberFilter(filter) {
+        state.memberFilter = filter;
+        document.querySelectorAll('[data-filter]').forEach(btn => { btn.classList.remove('active'); if (btn.dataset.filter === filter) btn.classList.add('active'); });
+        renderMembersTable();
+    }
+
+    function handleMemberRegistration(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const member = {
+            first_name: formData.get('first_name'), last_name: formData.get('last_name'), gender: formData.get('gender'),
+            date_of_birth: formData.get('date_of_birth') || null, phone: formData.get('phone'), email: formData.get('email') || null,
+            address: formData.get('address') || null, status: formData.get('status'), department: formData.get('department') || ''
+        };
+        const added = db.members.add(member);
+        showAlert(`Member ${added.first_name} ${added.last_name} registered successfully! (${added.member_code})`, 'success');
+        event.target.reset();
+        showAdminPage('members');
+    }
+
+    function openEditModal(id) {
+        const m = db.members.getById(id);
+        if (!m) return;
+        document.getElementById('editMemberBody').innerHTML = `
+            <form onsubmit="handleEditMember(event, ${id})">
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="form-label">First Name</label><input type="text" class="form-control" name="first_name" value="${m.first_name}" required></div>
+                    <div class="col-md-6"><label class="form-label">Last Name</label><input type="text" class="form-control" name="last_name" value="${m.last_name}" required></div>
+                    <div class="col-md-6"><label class="form-label">Gender</label><select class="form-select" name="gender"><option ${m.gender === 'Male' ? 'selected' : ''}>Male</option><option ${m.gender === 'Female' ? 'selected' : ''}>Female</option></select></div>
+                    <div class="col-md-6"><label class="form-label">Phone</label><input type="tel" class="form-control" name="phone" value="${m.phone}" required></div>
+                    <div class="col-md-6"><label class="form-label">Email</label><input type="email" class="form-control" name="email" value="${m.email || ''}"></div>
+                    <div class="col-md-6"><label class="form-label">Address</label><input type="text" class="form-control" name="address" value="${m.address || ''}"></div>
+                    <div class="col-md-6"><label class="form-label">Status</label><select class="form-select" name="status"><option ${m.status === 'Active' ? 'selected' : ''}>Active</option><option ${m.status === 'Inactive' ? 'selected' : ''}>Inactive</option><option ${m.status === 'Visitor' ? 'selected' : ''}>Visitor</option></select></div>
+                    <div class="col-md-6"><label class="form-label">Department</label><select class="form-select" name="department"><option value="" ${!m.department ? 'selected' : ''}>None</option><option ${m.department === 'Youth' ? 'selected' : ''}>Youth</option><option ${m.department === 'Choir' ? 'selected' : ''}>Choir</option><option ${m.department === "Women's Ministry" ? 'selected' : ''}>Women's Ministry</option><option ${m.department === "Men's Ministry" ? 'selected' : ''}>Men's Ministry</option><option ${m.department === "Children's Ministry" ? 'selected' : ''}>Children's Ministry</option></select></div>
+                </div>
+                <div class="mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-blue"><i class="bi bi-save"></i> Save Changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>`;
+        new bootstrap.Modal(document.getElementById('editMemberModal')).show();
+    }
+
+    function handleEditMember(event, id) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        db.members.update(id, {
+            first_name: formData.get('first_name'), last_name: formData.get('last_name'), gender: formData.get('gender'),
+            phone: formData.get('phone'), email: formData.get('email'), address: formData.get('address'),
+            status: formData.get('status'), department: formData.get('department') || ''
+        });
+        bootstrap.Modal.getInstance(document.getElementById('editMemberModal')).hide();
+        showAlert('Member updated successfully!', 'success');
+        renderMembersTable();
+    }
+
+    function deleteMember(id) {
+        const m = db.members.getById(id);
+        if (!m) return;
+        if (confirm(`Delete ${m.first_name} ${m.last_name}? This cannot be undone.`)) {
+            db.members.delete(id);
+            showAlert('Member deleted.', 'warning');
+            renderMembersTable();
+        }
+    }
+
+    function renderAttendancePage() {
+        const dateInput = document.getElementById('attendanceDateFilter');
+        if (!dateInput.value) dateInput.value = getTodayString();
+        renderAttendanceTable();
+    }
+
+    function renderAttendanceTable() {
+        const date = document.getElementById('attendanceDateFilter').value;
+        const serviceType = document.getElementById('attendanceServiceFilter').value;
+        let records = state.attendance;
+        if (date) records = records.filter(a => a.service_date === date);
+        if (serviceType !== 'All') records = records.filter(a => a.service_type === serviceType);
+
+        records.sort((a, b) => a.marked_at.localeCompare(b.marked_at));
+
+        document.getElementById('attendanceTotalCount').textContent = records.length;
+        document.getElementById('attendanceUniqueCount').textContent = new Set(records.map(r => r.member_id)).size;
+        document.getElementById('attendanceVisitorCount').textContent = records.filter(r => { const m = db.members.getById(r.member_id); return m && m.status === 'Visitor'; }).length;
+
+        const tbody = document.getElementById('attendanceTableBody');
+        if (records.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No attendance records found for the selected filters</td></tr>`; return; }
+
+        tbody.innerHTML = records.map((a, i) => `
+            <tr>
+                <td>${i + 1}</td><td><strong>${a.member_code}</strong></td><td>${a.member_name}</td>
+                <td>${formatDate(a.service_date)}</td><td><span class="badge bg-light text-dark">${a.service_type}</span></td>
+                <td>${a.marked_at}</td><td>${a.marked_by}</td>
+            </tr>`).join('');
+    }
+
+    function renderReports() {
+        const sundays = getLastFourSundays();
+        const fromDate = document.getElementById('reportFromDate');
+        const toDate = document.getElementById('reportToDate');
+        if (!fromDate.value) fromDate.value = sundays[0];
+        if (!toDate.value) toDate.value = sundays[3];
+
+        const from = fromDate.value, to = toDate.value, serviceFilter = document.getElementById('reportServiceFilter').value;
+        let records = state.attendance.filter(a => a.service_date >= from && a.service_date <= to);
+        if (serviceFilter !== 'All') records = records.filter(a => a.service_type === serviceFilter);
+
+        const services = [...new Set(records.map(r => r.service_date))];
+        document.getElementById('reportTotalAttendance').textContent = records.length;
+        document.getElementById('reportServiceCount').textContent = services.length;
+        document.getElementById('reportAvgAttendance').textContent = services.length > 0 ? Math.round(records.length / services.length) : 0;
+        const perService = services.map(s => records.filter(r => r.service_date === s).length);
+        document.getElementById('reportMaxAttendance').textContent = perService.length > 0 ? Math.max(...perService) : 0;
+
+        const ctx = document.getElementById('reportChart');
+        if (state.reportChart) state.reportChart.destroy();
+        state.reportChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: services.map(s => formatDate(s)), datasets: [{ label: 'Attendance', data: perService, borderColor: '#1E3A8A', backgroundColor: 'rgba(30, 58, 138, 0.1)', fill: true, tension: 0.3, pointBackgroundColor: '#F59E0B', pointRadius: 5 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
         });
 
-        /* ==========================================
-           5. AFRISOFT COPILOT (SIMULATED AI)
-           ========================================== */
-        const copilotOverlay = document.getElementById('copilot-overlay');
-        const copilotInput = document.getElementById('copilot-input');
+        const memberCounts = {};
+        records.forEach(r => { memberCounts[r.member_id] = (memberCounts[r.member_id] || 0) + 1; });
+        const topMembers = Object.entries(memberCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
-        function toggleCopilot(state) {
-            copilotOverlay.classList.toggle('active', state);
-            if (state) copilotInput.focus();
+        const tbody = document.getElementById('topMembersBody');
+        if (topMembers.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No data available</td></tr>`; return; }
+
+        tbody.innerHTML = topMembers.map(([memberId, count], i) => {
+            const m = db.members.getById(memberId); if (!m) return '';
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+            return `<tr><td><strong>${medal}</strong></td><td>${m.member_code}</td><td>${m.first_name} ${m.last_name}</td><td><span class="badge bg-primary">${count} services</span></td></tr>`;
+        }).join('');
+    }
+
+    function renderVisitorsPage() {
+        const visitors = db.members.getAll().filter(m => m.status === 'Visitor');
+        const tbody = document.getElementById('visitorsTableBody');
+        if (visitors.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">No visitors registered yet</td></tr>`; return; }
+
+        tbody.innerHTML = visitors.map(m => `
+            <tr>
+                <td><strong>${m.member_code}</strong></td><td>${m.first_name} ${m.last_name}</td>
+                <td class="d-none d-md-table-cell">${m.phone || '—'}</td><td class="d-none d-md-table-cell">${m.address || '—'}</td>
+                <td>${formatDate(m.joined_date)}</td>
+                <td><button class="btn btn-sm btn-outline-success" onclick="convertToMember(${m.id})" title="Convert to Member"><i class="bi bi-person-check"></i> Convert</button></td>
+            </tr>`).join('');
+    }
+
+    function convertToMember(id) {
+        db.members.update(id, { status: 'Active' });
+        const m = db.members.getById(id);
+        showAlert(`${m.first_name} ${m.last_name} converted to Active member!`, 'success');
+        renderVisitorsPage();
+    }
+
+    function handleVisitorRegistrationAdmin(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const added = db.members.add({
+            first_name: formData.get('first_name'), last_name: formData.get('last_name'), gender: formData.get('gender'),
+            phone: formData.get('phone') || '', email: '', address: formData.get('address') || '', status: 'Visitor', department: ''
+        });
+        showAlert(`Visitor ${added.first_name} ${added.last_name} registered! (${added.member_code})`, 'success');
+        event.target.reset();
+        renderVisitorsPage();
+    }
+
+    function renderSettings() {
+        const members = db.members.getAll();
+        const colorClasses = {
+            'warning': 'background:rgba(245,158,11,0.1);color:#F59E0B;',
+            'info': 'background:rgba(13,202,240,0.1);color:#0dcaf0;',
+            'danger': 'background:rgba(220,53,69,0.1);color:#dc3545;',
+            'primary': 'background:rgba(30,58,138,0.1);color:#1E3A8A;',
+            'success': 'background:rgba(22,163,74,0.1);color:#16a34a;'
+        };
+        document.getElementById('departmentGrid').innerHTML = CONFIG.departments.map(dept => {
+            const count = members.filter(m => m.department === dept.name).length;
+            return `<div class="col-6 col-md-4"><div class="dept-card"><div class="dept-icon" style="${colorClasses[dept.color]}"><i class="bi ${dept.icon}"></i></div><div class="dept-count">${count}</div><div class="dept-name">${dept.name}</div></div></div>`;
+        }).join('');
+    }
+
+    function renderDeskPage() {
+        document.getElementById('deskSearchInput').value = '';
+        searchDeskMembers(); updateDeskCounter(); renderDeskTodayList();
+    }
+
+    function searchDeskMembers() {
+        const query = document.getElementById('deskSearchInput').value;
+        const members = db.members.search(query);
+        const serviceType = document.getElementById('deskServiceType').value;
+        const container = document.getElementById('deskResults');
+
+        if (members.length === 0) {
+            container.innerHTML = `<div class="col-12"><div class="text-center py-5 text-muted"><i class="bi bi-search" style="font-size:3rem;"></i><p class="mt-2">No members found. Try a different search or register a new visitor.</p></div></div>`;
+            return;
         }
 
-        function copilotSearch(query) {
-            copilotInput.value = query;
-            processCopilotQuery();
-        }
+        container.innerHTML = members.map(m => {
+            const alreadyPresent = db.attendance.isMarkedToday(m.id, serviceType);
+            return `
+                <div class="col-md-6 col-xl-4">
+                    <div class="member-card ${alreadyPresent ? 'already-present' : ''}" onclick="showMemberDetail(${m.id})">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar ${getAvatarClass(m.status)}">${getInitials(m.first_name, m.last_name)}</div>
+                            <div class="flex-grow-1 min-w-0">
+                                <h6 class="mb-0 text-truncate">${m.first_name} ${m.last_name}</h6>
+                                <small class="text-muted d-block">${m.member_code}</small>
+                            </div>
+                            ${alreadyPresent ? '<i class="bi bi-check-circle-fill text-success fs-5"></i>' : ''}
+                        </div>
+                        <div class="mt-2 d-flex justify-content-between align-items-center">
+                            <small class="text-muted"><i class="bi bi-telephone"></i> ${m.phone || '—'}</small>
+                            ${getStatusBadge(m.status)}
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
+    }
 
-        copilotInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') processCopilotQuery();
+    function showMemberDetail(id) {
+        const m = db.members.getById(id);
+        if (!m) return;
+        state.selectedMemberId = id;
+        const serviceType = document.getElementById('deskServiceType').value;
+        const alreadyPresent = db.attendance.isMarkedToday(id, serviceType);
+
+        document.getElementById('memberDetailBody').innerHTML = `
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="avatar ${getAvatarClass(m.status)}" style="width:56px;height:56px;font-size:1.3rem;">${getInitials(m.first_name, m.last_name)}</div>
+                <div><h5 class="mb-0">${m.first_name} ${m.last_name}</h5><p class="text-muted mb-0">${m.member_code}</p></div>
+            </div>
+            <table class="table table-sm">
+                <tr><td class="text-muted" style="width:120px;">Status</td><td>${getStatusBadge(m.status)}</td></tr>
+                <tr><td class="text-muted">Gender</td><td>${m.gender}</td></tr>
+                <tr><td class="text-muted">Phone</td><td>${m.phone || '—'}</td></tr>
+                <tr><td class="text-muted">Email</td><td>${m.email || '—'}</td></tr>
+                <tr><td class="text-muted">Address</td><td>${m.address || '—'}</td></tr>
+                <tr><td class="text-muted">Department</td><td>${m.department || '—'}</td></tr>
+                <tr><td class="text-muted">Joined</td><td>${formatDate(m.joined_date)}</td></tr>
+            </table>
+            ${alreadyPresent ? '<div class="alert alert-success mb-0"><i class="bi bi-check-circle-fill"></i> Already marked present for today\'s ' + serviceType + '.</div>' : ''}`;
+
+        const btn = document.getElementById('markPresentBtn');
+        if (alreadyPresent) btn.classList.add('d-none'); else btn.classList.remove('d-none');
+        new bootstrap.Modal(document.getElementById('memberDetailModal')).show();
+    }
+
+    function markPresent() {
+        const id = state.selectedMemberId;
+        if (!id) return;
+        const member = db.members.getById(id);
+        if (!member) return;
+
+        const serviceType = document.getElementById('deskServiceType').value;
+        const now = new Date();
+
+        db.attendance.add({
+            member_id: id, member_name: `${member.first_name} ${member.last_name}`, member_code: member.member_code,
+            service_date: getTodayString(), service_type: serviceType, marked_at: now.toTimeString().split(' ')[0], marked_by: 'Attendance Desk'
         });
 
-        function processCopilotQuery() {
-            const q = copilotInput.value.toLowerCase();
-            let targetCard = null;
+        bootstrap.Modal.getInstance(document.getElementById('memberDetailModal')).hide();
+        showAlert(`${member.first_name} ${member.last_name} marked present for ${serviceType}!`, 'success');
+        searchDeskMembers(); updateDeskCounter(); renderDeskTodayList();
+    }
 
-            if (q.includes('iot') || q.includes('security')) targetCard = document.getElementById('proj-nexguard');
-            else if (q.includes('lab') || q.includes('experiment')) targetCard = document.getElementById('proj-aivideo');
-            else if (q.includes('repo') || q.includes('open source')) targetCard = document.getElementById('opensource');
-            else if (q.includes('stream') || q.includes('livcast')) targetCard = document.getElementById('proj-livcast');
-            else if (q.includes('money')) targetCard = document.getElementById('proj-moneyos');
-
-            if (targetCard) {
-                toggleCopilot(false);
-                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // Highlight effect
-                targetCard.style.boxShadow = '0 0 40px var(--accent-cyan)';
-                targetCard.style.borderColor = 'var(--accent-cyan)';
-                setTimeout(() => {
-                    targetCard.style.boxShadow = '';
-                    targetCard.style.borderColor = '';
-                }, 2500);
-            }
-        }
-
-        /* ==========================================
-           6. CUSTOM MAGNETIC CURSOR
-           ========================================== */
-        const dot = document.querySelector('.cursor-dot');
-        const ring = document.querySelector('.cursor-ring');
-        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-
-        window.addEventListener('mousemove', e => {
-            mouseX = e.clientX; mouseY = e.clientY;
-            dot.style.left = mouseX + 'px';
-            dot.style.top = mouseY + 'px';
+    function handleVisitorRegistrationDesk(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const added = db.members.add({
+            first_name: formData.get('first_name'), last_name: formData.get('last_name'), gender: formData.get('gender'),
+            phone: formData.get('phone') || '', email: '', address: formData.get('address') || '', status: 'Visitor', department: ''
         });
 
-        function animateRing() {
-            ringX += (mouseX - ringX) * 0.15;
-            ringY += (mouseY - ringY) * 0.15;
-            ring.style.left = ringX + 'px';
-            ring.style.top = ringY + 'px';
-            requestAnimationFrame(animateRing);
-        }
-        animateRing();
-
-        document.querySelectorAll('button, a, .project-card, .quadrant-card, .suggestion-chip, input').forEach(el => {
-            el.addEventListener('mouseenter', () => ring.classList.add('hover-active'));
-            el.addEventListener('mouseleave', () => ring.classList.remove('hover-active'));
+        const serviceType = document.getElementById('deskServiceType').value;
+        const now = new Date();
+        db.attendance.add({
+            member_id: added.id, member_name: `${added.first_name} ${added.last_name}`, member_code: added.member_code,
+            service_date: getTodayString(), service_type: serviceType, marked_at: now.toTimeString().split(' ')[0], marked_by: 'Attendance Desk'
         });
 
-        /* ==========================================
-           7. HERO CANVAS (PARTICLE NODE GRAPH)
-           ========================================== */
-        const canvas = document.getElementById('hero-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+        showAlert(`Visitor ${added.first_name} ${added.last_name} registered and marked present! (${added.member_code})`, 'success');
+        event.target.reset(); searchDeskMembers(); updateDeskCounter(); renderDeskTodayList();
+    }
+
+    function updateDeskCounter() {
+        const serviceType = document.getElementById('deskServiceType').value;
+        const count = state.attendance.filter(a => a.service_date === getTodayString() && a.service_type === serviceType).length;
+        document.getElementById('deskTodayCount').textContent = count;
+        document.getElementById('deskServiceLabel').textContent = serviceType;
+    }
+
+    function renderDeskTodayList() {
+        const records = state.attendance.filter(a => a.service_date === getTodayString() && a.service_type === document.getElementById('deskServiceType').value).sort((a, b) => b.marked_at.localeCompare(a.marked_at));
+        const container = document.getElementById('deskTodayList');
+        if (records.length === 0) { container.innerHTML = '<p class="text-muted text-center p-3 mb-0">No one marked present yet</p>'; return; }
+        container.innerHTML = records.map(r => `
+            <div class="today-item">
+                <i class="bi bi-check-circle-fill check"></i>
+                <div class="flex-grow-1">
+                    <div style="font-size:0.88rem;font-weight:600;">${r.member_name}</div>
+                    <small class="text-muted">${r.member_code} · ${r.marked_at}</small>
+                </div>
+            </div>`).join('');
+    }
+
+    function init() {
+        initializeMockData();
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+        document.getElementById('currentDateAdmin').textContent = dateStr;
+        document.getElementById('currentDateDesk').textContent = dateStr;
+        document.getElementById('homeDate').textContent = dateStr;
+        document.getElementById('homeYear').textContent = today.getFullYear();
+
+        document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+        document.getElementById('memberSearchInput')?.addEventListener('input', renderMembersTable);
+        document.getElementById('deskSearchInput')?.addEventListener('input', searchDeskMembers);
         
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = document.getElementById('hero').offsetHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2 + 0.5;
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(0, 243, 255, 0.8)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 80; i++) particles.push(new Particle());
-        }
-
-        function connectParticles() {
-            let maxDist = 120;
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    let dx = particles[i].x - particles[j].x;
-                    let dy = particles[i].y - particles[j].y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < maxDist) {
-                        let opacity = 1 - (dist / maxDist);
-                        ctx.strokeStyle = `rgba(0, 243, 255, ${opacity * 0.2})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-                
-                // Connect to mouse
-                let dxm = particles[i].x - mouseX;
-                let dym = particles[i].y - mouseY;
-                let distM = Math.sqrt(dxm * dxm + dym * dym);
-                if (distM < 200) {
-                    let opacity = 1 - (distM / 200);
-                    ctx.strokeStyle = `rgba(123, 47, 247, ${opacity * 0.5})`;
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(mouseX, mouseY);
-                    ctx.stroke();
-                }
-            }
-        }
-
-        function animateCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            connectParticles();
-            requestAnimationFrame(animateCanvas);
-        }
-        initParticles();
-        animateCanvas();
-
-        /* ==========================================
-           8. DIAGNOSTICS OVERLAY (Cmd+P)
-           ========================================== */
-        const diagEl = document.getElementById('diagnostics');
-        let diagVisible = false;
-        let lastTime = performance.now();
-        let frames = 0;
-        let fps = 60;
-
-        function toggleDiagnostics() {
-            diagVisible = !diagVisible;
-            diagEl.style.display = diagVisible ? 'block' : 'none';
-        }
-
-        function updateDiagnostics() {
-            frames++;
-            const now = performance.now();
-            if (now >= lastTime + 1000) {
-                fps = Math.round((frames * 1000) / (now - lastTime));
-                lastTime = now;
-                frames = 0;
-                const domNodes = document.getElementsByTagName('*').length;
-                const mem = performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1048576) : 'N/A';
-                diagEl.innerHTML = `FPS: ${fps} | DOM: ${domNodes} | MEM: ${mem}MB`;
-            }
-            requestAnimationFrame(updateDiagnostics);
-        }
-        updateDiagnostics();
-
-        /* ==========================================
-           9. INITIALIZATION
-           ========================================== */
-        window.addEventListener('load', () => {
-            renderProjects();
-            setTimeout(() => {
-                document.getElementById('boot-sequence').classList.add('fade-out');
-            }, 2000);
+        const deskService = document.getElementById('deskServiceType');
+        if (deskService) deskService.addEventListener('change', () => { searchDeskMembers(); updateDeskCounter(); renderDeskTodayList(); });
+        
+        const attDate = document.getElementById('attendanceDateFilter');
+        if (attDate) attDate.addEventListener('change', renderAttendanceTable);
+        const attService = document.getElementById('attendanceServiceFilter');
+        if (attService) attService.addEventListener('change', renderAttendanceTable);
+        
+        ['reportFromDate', 'reportToDate', 'reportServiceFilter'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('change', renderReports);
         });
-    </script>
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
